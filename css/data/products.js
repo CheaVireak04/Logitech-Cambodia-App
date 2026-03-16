@@ -12,7 +12,7 @@ export const products = [
         name: "G915 TKL Wireless", 
         price: 229, 
         category: "Keyboard", 
-        icon: "⌨️", 
+        image: "https://resource.logitechg.com/w_544,h_466,ar_7:6,c_pad,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/gaming/en/products/g915-tkl/g915-tkl-gallery/us-g915-tkl-carbon-gallery-topdown.png", 
         specs: ["Low Profile GL Switches", "LIGHTSYNC RGB", "Aircraft-grade aluminum"] 
     },
     { 
@@ -20,7 +20,7 @@ export const products = [
         name: "G733 LIGHTSPEED", 
         price: 129, 
         category: "Headset", 
-        icon: "🎧", 
+        image: "https://resource.logitechg.com/w_544,h_466,ar_7:6,c_pad,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/gaming/en/products/g733/gallery/g733-lilac-gallery-1.png", 
         specs: ["278g Lightweight", "Front-facing RGB", "PRO-G Drivers"] 
     },
     { 
@@ -28,7 +28,7 @@ export const products = [
         name: "Brio 4K Stream", 
         price: 199, 
         category: "Camera", 
-        icon: "📷", 
+        image: "https://resource.logitech.com/w_692,c_lpad,ar_4:3,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/logitech/en/products/webcams/brio/gallery/brio-gallery-1.png?v=1", 
         specs: ["Ultra HD 4K", "RightLight 3 + HDR", "Windows Hello support"] 
     }
 ];

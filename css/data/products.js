@@ -1,0 +1,34 @@
+export const products = [
+    { 
+        id: "1", 
+        name: "G Pro X Superlight", 
+        price: 149, 
+        category: "Mouse", 
+        icon: "🖱️", 
+        specs: ["63g Ultra-lightweight", "HERO 25K Sensor", "LIGHTSPEED Wireless"] 
+    },
+    { 
+        id: "2", 
+        name: "G915 TKL Wireless", 
+        price: 229, 
+        category: "Keyboard", 
+        icon: "⌨️", 
+        specs: ["Low Profile GL Switches", "LIGHTSYNC RGB", "Aircraft-grade aluminum"] 
+    },
+    { 
+        id: "3", 
+        name: "G733 LIGHTSPEED", 
+        price: 129, 
+        category: "Headset", 
+        icon: "🎧", 
+        specs: ["278g Lightweight", "Front-facing RGB", "PRO-G Drivers"] 
+    },
+    { 
+        id: "4", 
+        name: "Brio 4K Stream", 
+        price: 199, 
+        category: "Camera", 
+        icon: "📷", 
+        specs: ["Ultra HD 4K", "RightLight 3 + HDR", "Windows Hello support"] 
+    }
+];

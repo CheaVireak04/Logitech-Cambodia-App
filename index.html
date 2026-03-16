@@ -3,248 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Logitech Cambodia PRO</title>
-    
+    <title>Logitech Cambodia</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: { logiBlue: '#00b8fc', tgBg: '#0a0a0a', tgCard: '#171717' },
-                    fontFamily: { sans: ['Inter', 'sans-serif'] }
-                }
-            }
-        }
-    </script>
-
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
     <style>
-        body { background-color: var(--tg-theme-bg-color, #0a0a0a); color: var(--tg-theme-text-color, #ffffff); -webkit-tap-highlight-color: transparent; }
-        .glass { background: rgba(23, 23, 23, 0.7); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-top: 1px solid rgba(255,255,255,0.05); }
-        .hide-scroll::-webkit-scrollbar { display: none; }
-        [x-cloak] { display: none !important; }
+        /* Adapt to Telegram's Native Theme */
+        body {
+            background-color: var(--tg-theme-bg-color, #1a1a2e);
+            color: var(--tg-theme-text-color, #ffffff);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        .tg-card {
+            background-color: var(--tg-theme-secondary-bg-color, #16213e);
+        }
+        .logi-blue { color: #00b8fc; }
+        .bg-logi-blue { background-color: #00b8fc; }
     </style>
 </head>
-<body class="antialiased pb-24 hide-scroll" x-data="logitechStore()">
+<body class="pb-20">
 
-    <div x-show="toast.show" x-transition.opacity.duration.300ms x-cloak class="fixed top-4 left-0 right-0 z-50 flex justify-center pointer-events-none">
-        <div class="bg-logiBlue text-black font-bold px-6 py-3 rounded-full shadow-[0_0_20px_rgba(0,184,252,0.4)] flex items-center gap-2">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-            <span x-text="toast.message"></span>
+    <header class="p-4 flex justify-between items-center border-b border-gray-700">
+        <h1 class="text-xl font-bold tracking-wider uppercase logi-blue">Logitech KH</h1>
+        <div class="flex space-x-3">
+            <span class="text-xl">🔍</span>
+            <span class="text-xl">🛒</span>
+        </div>
+    </header>
+
+    <div class="m-4 rounded-xl bg-gradient-to-r from-gray-900 to-gray-800 border border-gray-700 overflow-hidden relative shadow-lg">
+        <div class="p-6">
+            <span class="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded uppercase">New Arrival</span>
+            <h2 class="text-2xl font-bold mt-2">G PRO X SUPERLIGHT</h2>
+            <p class="text-sm text-gray-400 mt-1">Zero Opposition.</p>
+            <button class="mt-4 bg-logi-blue text-black font-bold py-2 px-4 rounded-lg w-full" onclick="tg.showAlert('Opening G PRO X SUPERLIGHT Page')">
+                View Product
+            </button>
         </div>
     </div>
 
-    <div x-show="view === 'home'" x-transition.opacity.duration.400ms class="p-4">
-        <header class="flex justify-between items-center mb-6 pt-2">
-            <h1 class="text-2xl font-extrabold tracking-widest text-logiBlue uppercase">Logi<span class="text-white">tech</span> KH</h1>
-        </header>
-
-        <div class="relative mb-6">
-            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+    <div class="px-4">
+        <h3 class="text-lg font-bold mb-3">Categories</h3>
+        <div class="grid grid-cols-4 gap-2 text-center text-xs">
+            <div class="tg-card p-2 rounded-lg flex flex-col items-center justify-center h-16 shadow">
+                <span class="text-2xl mb-1">🎮</span> Mice
             </div>
-            <input x-model="searchQuery" type="text" placeholder="Search gaming gear..." class="w-full bg-tgCard border border-gray-800 text-white rounded-2xl py-4 pl-12 pr-4 focus:outline-none focus:border-logiBlue transition-colors shadow-inner">
+            <div class="tg-card p-2 rounded-lg flex flex-col items-center justify-center h-16 shadow">
+                <span class="text-2xl mb-1">⌨️</span> Keys
+            </div>
+            <div class="tg-card p-2 rounded-lg flex flex-col items-center justify-center h-16 shadow">
+                <span class="text-2xl mb-1">🎧</span> Audio
+            </div>
+            <div class="tg-card p-2 rounded-lg flex flex-col items-center justify-center h-16 shadow">
+                <span class="text-2xl mb-1">📷</span> Cams
+            </div>
         </div>
+    </div>
 
-        <div x-show="!searchQuery" class="rounded-3xl p-6 mb-8 relative overflow-hidden bg-gradient-to-br from-gray-800 to-black border border-gray-800">
-            <div class="absolute -top-10 -right-10 w-40 h-40 bg-logiBlue opacity-20 blur-3xl rounded-full"></div>
-            <span class="text-[10px] bg-logiBlue text-black font-bold px-3 py-1 rounded-full uppercase tracking-wider">New Arrival</span>
-            <h2 class="text-3xl font-black mt-4 mb-1">G PRO X 2</h2>
-            <p class="text-gray-400 text-sm mb-4">LIGHTSPEED Wireless</p>
-        </div>
-
-        <h3 class="text-lg font-bold mb-4 text-gray-300" x-text="searchQuery ? 'Search Results' : 'Trending Gear'"></h3>
+    <div class="p-4 mt-2">
+        <h3 class="text-lg font-bold mb-3">Trending Gear</h3>
         <div class="grid grid-cols-2 gap-4">
-            <template x-for="product in filteredProducts" :key="product.id">
-                <div @click="openProduct(product)" class="bg-tgCard rounded-2xl p-4 border border-gray-800/50 flex flex-col justify-between active:scale-95 transition-transform duration-200">
-                    <div class="w-full h-32 flex items-center justify-center bg-black/40 rounded-xl mb-4 p-2 relative">
-                        <span class="text-4xl" x-text="product.icon"></span>
-                    </div>
-                    <div>
-                        <span class="text-[10px] uppercase tracking-wider text-gray-500" x-text="product.category"></span>
-                        <h4 class="font-bold text-sm leading-tight mt-1 truncate" x-text="product.name"></h4>
-                        <div class="flex justify-between items-end mt-3">
-                            <span class="text-logiBlue font-bold text-lg" x-text="'$' + product.price"></span>
-                            <button @click.stop="addToCart(product)" class="bg-gray-800 hover:bg-logiBlue hover:text-black p-2 rounded-full transition-colors">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-                            </button>
-                        </div>
-                    </div>
+            <div class="tg-card rounded-xl p-3 shadow border border-gray-800">
+                <div class="h-24 bg-gray-800 rounded flex items-center justify-center mb-2">
+                    <span class="text-4xl">🖱️</span>
                 </div>
-            </template>
-        </div>
-        <div x-show="filteredProducts.length === 0" class="text-center py-10 text-gray-500">No products found.</div>
-    </div>
-
-    <div x-show="view === 'product'" x-transition.opacity.duration.300ms x-cloak class="p-4">
-        <button @click="view = 'home'" class="mb-4 flex items-center gap-2 text-gray-400 hover:text-white">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg> Back
-        </button>
-        
-        <template x-if="activeProduct">
-            <div>
-                <div class="bg-tgCard rounded-3xl p-6 mb-6 flex justify-center items-center h-64 border border-gray-800">
-                    <span class="text-8xl drop-shadow-[0_0_30px_rgba(0,184,252,0.3)]" x-text="activeProduct.icon"></span>
-                </div>
-                <div class="flex justify-between items-start mb-6">
-                    <div>
-                        <span class="text-logiBlue text-xs font-bold uppercase tracking-widest" x-text="activeProduct.category"></span>
-                        <h2 class="text-3xl font-black mt-1" x-text="activeProduct.name"></h2>
-                    </div>
-                    <span class="text-2xl font-bold text-logiBlue" x-text="'$' + activeProduct.price"></span>
-                </div>
-                <p class="text-gray-400 text-sm leading-relaxed mb-8" x-text="activeProduct.desc"></p>
-                
-                <button @click="addToCart(activeProduct); view = 'home'" class="w-full bg-logiBlue text-black font-black text-lg py-4 rounded-2xl active:scale-95 transition-transform shadow-[0_0_20px_rgba(0,184,252,0.2)]">
-                    ADD TO CART - $<span x-text="activeProduct.price"></span>
-                </button>
+                <h4 class="font-bold text-sm truncate">G502 X PLUS</h4>
+                <p class="text-logi-blue font-bold mt-1">$159.00</p>
+                <button class="mt-2 w-full bg-gray-700 hover:bg-gray-600 text-white text-xs py-1.5 rounded" onclick="tg.HapticFeedback.impactOccurred('light');">Add to Cart</button>
             </div>
-        </template>
-    </div>
-
-    <div x-show="view === 'cart'" x-transition.opacity.duration.300ms x-cloak class="p-4 pb-32">
-        <h2 class="text-3xl font-black mb-6">Your Cart</h2>
-        
-        <div x-show="cart.length === 0" class="text-center py-20">
-            <span class="text-6xl mb-4 block opacity-50">🛒</span>
-            <p class="text-gray-400 text-lg">Your cart is empty.</p>
-            <button @click="view = 'home'" class="mt-6 text-logiBlue font-bold underline">Go Shopping</button>
-        </div>
-
-        <div x-show="cart.length > 0" class="space-y-4 mb-8">
-            <template x-for="(item, index) in cart" :key="index">
-                <div class="bg-tgCard p-4 rounded-2xl flex items-center gap-4 border border-gray-800/50">
-                    <div class="w-16 h-16 bg-black/50 rounded-xl flex items-center justify-center text-3xl shrink-0" x-text="item.icon"></div>
-                    <div class="flex-1">
-                        <h4 class="font-bold text-sm" x-text="item.name"></h4>
-                        <span class="text-logiBlue font-bold mt-1 block" x-text="'$' + item.price"></span>
-                    </div>
-                    <button @click="removeFromCart(index)" class="w-10 h-10 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center active:scale-90 transition-transform">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                    </button>
+            <div class="tg-card rounded-xl p-3 shadow border border-gray-800">
+                <div class="h-24 bg-gray-800 rounded flex items-center justify-center mb-2">
+                    <span class="text-4xl">🎧</span>
                 </div>
-            </template>
-        </div>
-
-        <div x-show="cart.length > 0" class="bg-tgCard p-6 rounded-3xl border border-gray-800">
-            <h3 class="font-bold mb-4 text-gray-300">Delivery Details</h3>
-            <input x-model="customer.name" type="text" placeholder="Full Name" class="w-full bg-black border border-gray-800 text-white p-4 rounded-xl mb-3 focus:outline-none focus:border-logiBlue">
-            <input x-model="customer.phone" type="tel" placeholder="Phone Number" class="w-full bg-black border border-gray-800 text-white p-4 rounded-xl mb-4 focus:outline-none focus:border-logiBlue">
-            
-            <div class="flex justify-between items-center text-gray-400 mb-2"><span>Subtotal</span> <span class="font-bold text-white" x-text="'$' + cartTotal"></span></div>
-            <div class="flex justify-between items-center text-gray-400 mb-4 pb-4 border-b border-gray-800"><span>Delivery Est.</span> <span class="font-bold text-white">+$2</span></div>
-            <div class="flex justify-between items-center text-xl font-black mb-6"><span>Total</span> <span class="text-logiBlue" x-text="'$' + (cartTotal + 2)"></span></div>
-            
-            <button @click="processCheckout()" class="w-full bg-logiBlue text-black font-black py-4 rounded-xl active:scale-95 transition-transform flex justify-center items-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                CONFIRM ORDER
-            </button>
+                <h4 class="font-bold text-sm truncate">G733 Wireless</h4>
+                <p class="text-logi-blue font-bold mt-1">$129.00</p>
+                <button class="mt-2 w-full bg-gray-700 hover:bg-gray-600 text-white text-xs py-1.5 rounded" onclick="tg.HapticFeedback.impactOccurred('light');">Add to Cart</button>
+            </div>
         </div>
     </div>
-
-    <nav class="fixed bottom-0 w-full glass z-40 pb-safe">
-        <div class="flex justify-around items-center p-4 max-w-md mx-auto">
-            <button @click="view = 'home'" :class="view === 'home' ? 'text-logiBlue' : 'text-gray-500'" class="flex flex-col items-center transition-colors">
-                <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                <span class="text-[10px] font-bold uppercase tracking-widest">Shop</span>
-            </button>
-            <button @click="view = 'cart'" :class="view === 'cart' ? 'text-logiBlue' : 'text-gray-500'" class="flex flex-col items-center transition-colors relative">
-                <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                <span class="text-[10px] font-bold uppercase tracking-widest">Cart</span>
-                <span x-show="cart.length > 0" x-text="cart.length" class="absolute -top-1 -right-2 bg-logiBlue text-black text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center"></span>
-            </button>
-        </div>
-    </nav>
 
     <script>
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('logitechStore', () => ({
-                view: 'home',
-                searchQuery: '',
-                activeProduct: null,
-                cart: [],
-                customer: { name: '', phone: '' },
-                toast: { show: false, message: '' },
-                
-                products: [
-                    { id: 1, name: "G Pro X Superlight", price: 149, category: "Mouse", icon: "🖱️", desc: "Less than 63 grams. Advanced low-latency LIGHTSPEED wireless. Sub-micron precision with HERO 25K sensor." },
-                    { id: 2, name: "G915 TKL Wireless", price: 229, category: "Keyboard", icon: "⌨️", desc: "A breakthrough in design and engineering. Features LIGHTSPEED pro-grade wireless, advanced LIGHTSYNC RGB, and high-performance low-profile mechanical switches." },
-                    { id: 3, name: "G733 LIGHTSPEED", price: 129, category: "Headset", icon: "🎧", desc: "Meet G733, a gaming headset designed to suit your style. Embrace total wireless with 2.4 GHZ LIGHTSPEED." },
-                    { id: 4, name: "Brio 4K Stream", price: 199, category: "Camera", icon: "📷", desc: "Ultra HD 4K webcam for video conferencing, streaming, and recording. Features RightLight 3 and HDR technology." }
-                ],
-
-                get filteredProducts() {
-                    if (this.searchQuery === '') return this.products;
-                    return this.products.filter(p => p.name.toLowerCase().includes(this.searchQuery.toLowerCase()));
-                },
-
-                get cartTotal() {
-                    return this.cart.reduce((total, item) => total + item.price, 0);
-                },
-
-                openProduct(product) {
-                    this.activeProduct = product;
-                    this.view = 'product';
-                    window.scrollTo(0,0);
-                },
-
-                addToCart(product) {
-                    this.cart.push(product);
-                    if (window.Telegram.WebApp.HapticFeedback) {
-                        window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-                    }
-                    this.showToast(`${product.name} Added!`);
-                },
-
-                removeFromCart(index) {
-                    this.cart.splice(index, 1);
-                    if (window.Telegram.WebApp.HapticFeedback) {
-                        window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
-                    }
-                },
-
-                showToast(msg) {
-                    this.toast.message = msg;
-                    this.toast.show = true;
-                    setTimeout(() => { this.toast.show = false; }, 2000);
-                },
-
-                processCheckout() {
-                    if (!this.customer.name || !this.customer.phone) {
-                        this.showToast('Please enter your name and phone!');
-                        if (window.Telegram.WebApp.HapticFeedback) {
-                            window.Telegram.WebApp.HapticFeedback.notificationOccurred('error');
-                        }
-                        return;
-                    }
-
-                    const orderData = {
-                        customer: this.customer.name,
-                        phone: this.customer.phone,
-                        items: this.cart.map(i => i.name),
-                        total: this.cartTotal + 2 // plus delivery
-                    };
-
-                    if (window.Telegram.WebApp.HapticFeedback) {
-                        window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
-                    }
-                    
-                    // Send data securely back to Telegram Bot
-                    window.Telegram.WebApp.sendData(JSON.stringify(orderData));
-                    window.Telegram.WebApp.close();
-                },
-
-                init() {
-                    const tg = window.Telegram.WebApp;
-                    tg.expand();
-                    tg.ready();
-                    tg.setHeaderColor('#0a0a0a');
-                }
-            }))
-        })
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Opens app to full height
+        tg.ready();  // Tells Telegram the app is loaded
+        
+        // Setup Main Button (Example)
+        tg.MainButton.setText("VIEW PROMOTIONS");
+        tg.MainButton.show();
+        tg.MainButton.onClick(function() {
+            tg.showAlert("Navigating to Deals Center...");
+        });
     </script>
 </body>
 </html>

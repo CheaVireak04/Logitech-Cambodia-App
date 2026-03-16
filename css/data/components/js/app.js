@@ -1,5 +1,5 @@
 import { tg, initTelegram, hapticImpact, hapticNotification } from './telegram.js';
-import { products } from '../data/products.js';
+import { products } from '../Data/products.js';
 import { renderProductCard } from '../components/productCard.js';
 import { renderCartItem } from '../components/cartItem.js';
 import { renderBottomNav } from '../components/navbar.js';

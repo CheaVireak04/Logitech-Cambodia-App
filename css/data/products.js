@@ -4,7 +4,7 @@ export const products = [
         name: "G Pro X Superlight", 
         price: 149, 
         category: "Mouse", 
-        icon: "🖱️", 
+        image: "https://resource.logitechg.com/c_fill,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/gaming/en/products/pro-x-superlight-2/new-gallery-assets-2025/pro-x-superlight-2-mice-top-angle-white-gallery-1.png", 
         specs: ["63g Ultra-lightweight", "HERO 25K Sensor", "LIGHTSPEED Wireless"] 
     },
     { 

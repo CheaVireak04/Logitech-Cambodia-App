@@ -1,40 +1,301 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Logitech Cambodia Powered by REAK</title>
-    
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        logiBlue: '#00b8fc',
-                        tgBg: 'var(--tg-theme-bg-color, #121212)',
-                        tgText: 'var(--tg-theme-text-color, #ffffff)',
-                        tgCard: 'var(--tg-theme-secondary-bg-color, #1e1e1e)',
-                    }
-                }
+!DOCTYPE html
+html lang=en
+head
+    meta charset=UTF-8
+    meta name=viewport content=width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no
+    titleLogitech Cambodiatitle
+    script src=httpstelegram.orgjstelegram-web-app.jsscript
+    script src=httpscdn.tailwindcss.comscript
+    style
+        root {
+            --bg-color var(--tg-theme-bg-color, #121212);
+            --text-color var(--tg-theme-text-color, #ffffff);
+            --card-bg var(--tg-theme-secondary-bg-color, #1e1e1e);
+            --logi-blue #00b8fc;
+        }
+        body { background-color var(--bg-color); color var(--text-color); font-family sans-serif; }
+        .tg-card { background-color var(--card-bg); }
+        .view-section { display none; animation fadeIn 0.3s ease-in-out; }
+        .view-section.active { display block; }
+        @keyframes fadeIn { from { opacity 0; transform translateY(10px); } to { opacity 1; transform translateY(0); } }
+    style
+head
+body class=pb-24
+
+    div id=view-home class=view-section active
+        header class=p-4 flex justify-between items-center border-b border-gray-800
+            h1 class=text-xl font-bold tracking-wider style=color var(--logi-blue)LOGITECH KHh1
+            div class=relative cursor-pointer onclick=navigate('cart')
+                span class=text-2xl🛒span
+                span id=cart-badge class=absolute -top-1 -right-2 bg-red-500 text-white text-xs font-bold px-1.5 rounded-full hidden0span
+            div
+        header
+
+        div class=m-4 rounded-xl bg-gradient-to-r from-blue-900 to-gray-900 p-6 shadow-lg
+            span class=bg-red-500 text-white text-xs font-bold px-2 py-1 roundedFLASH SALEspan
+            h2 class=text-2xl font-bold mt-2G502 X GAMING WEEKENDh2
+            p class=text-sm text-gray-300 mt-1Save $20 today only!p
+        div
+
+        div class=px-4
+            h3 class=text-lg font-bold mb-3All Gearh3
+            div id=product-list class=grid grid-cols-2 gap-3div
+        div
+    div
+
+    div id=view-product class=view-section
+        div id=product-detail-content class=p-4div
+    div
+
+    div id=view-cart class=view-section p-4
+        h2 class=text-2xl font-bold mb-4Your Carth2
+        div id=cart-items class=space-y-3div
+        div class=mt-6 border-t border-gray-700 pt-4
+            div class=flex justify-between text-lg font-bold
+                spanTotalspan
+                span id=cart-total style=color var(--logi-blue)$0span
+            div
+        div
+    div
+
+    div id=view-checkout class=view-section p-4
+        h2 class=text-2xl font-bold mb-4Delivery Detailsh2
+        div class=space-y-4
+            input type=text id=cust-name placeholder=Full Name class=w-full p-3 rounded tg-card border border-gray-700 focusoutline-none
+            input type=tel id=cust-phone placeholder=Phone Number class=w-full p-3 rounded tg-card border border-gray-700 focusoutline-none
+            textarea id=cust-address placeholder=Delivery Address (e.g., Phnom Penh) class=w-full p-3 rounded tg-card border border-gray-700 focusoutline-none h-24textarea
+            
+            h3 class=font-bold mt-4Delivery Methodh3
+            select id=delivery-method class=w-full p-3 rounded tg-card border border-gray-700
+                option value=expressPhnom Penh Express ($2)option
+                option value=provinceProvince Delivery ($3)option
+                option value=pickupStore Pickup (Free)option
+            select
+        div
+    div
+
+    div id=view-payment class=view-section p-4 text-center
+        h2 class=text-2xl font-bold mb-2Paymenth2
+        p class=text-gray-400 mb-6Please transfer the total amount to confirm your order.p
+        
+        div class=tg-card p-6 rounded-xl border border-gray-700 inline-block mb-6
+            img src=httpsupload.wikimedia.orgwikipediacommonsdd0QR_code_for_mobile_English_Wikipedia.svg alt=Mock QR class=w-48 h-48 mx-auto bg-white p-2 rounded
+            p class=mt-4 font-bold text-lgABA Bankp
+            p class=text-gray-400Logitech Cambodia Authp
+            p class=text-xl font-bold mt-2 style=color var(--logi-blue) id=payment-total$0p
+        div
+
+        button class=w-full bg-gray-700 text-white font-bold py-3 rounded-lg flex items-center justify-center space-x-2 onclick=tg.showAlert('Mock File picker would open here')
+            span📸span spanUpload Payment Receiptspan
+        button
+    div
+
+    script
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.ready();
+
+         1. Database Mock
+        const products = [
+            { id 1, name G Pro X Superlight, price 149, category Mice, icon 🖱️, specs Ultra-lightweight 63g, HERO 25K sensor, Lightspeed wireless. },
+            { id 2, name G502 X Plus, price 159, category Mice, icon 🖱️, specs Hybrid optical-mechanical switches, RGB lighting. },
+            { id 3, name G733 Lightspeed, price 129, category Headset, icon 🎧, specs Wireless RGB gaming headset, Blue VO!CE mic technology. },
+            { id 4, name Brio 4K Webcam, price 199, category Camera, icon 📷, specs Ultra HD 4K, HDR, right-light 3 technology. }
+        ];
+
+        let cart = [];
+        let currentView = 'home';
+        let activeProductId = null;
+
+         2. Navigation System
+        function navigate(viewId) {
+            document.querySelectorAll('.view-section').forEach(el = el.classList.remove('active'));
+            document.getElementById(`view-${viewId}`).classList.add('active');
+            currentView = viewId;
+
+             Handle Telegram Back Button
+            if (viewId === 'home') {
+                tg.BackButton.hide();
+                setupHomeMainButton();
+            } else {
+                tg.BackButton.show();
+                tg.BackButton.onClick(() = navigate('home'));
+            }
+
+             Handle Main Button per view
+            tg.MainButton.offClick(handleMainButtonClick); 
+            if (viewId === 'cart') setupCartMainButton();
+            if (viewId === 'checkout') setupCheckoutMainButton();
+            if (viewId === 'payment') setupPaymentMainButton();
+            
+            window.scrollTo(0, 0);
+        }
+
+         3. Render Home Products
+        function renderHome() {
+            const list = document.getElementById('product-list');
+            list.innerHTML = products.map(p = `
+                div class=tg-card rounded-xl p-3 shadow border border-gray-800 flex flex-col justify-between cursor-pointer onclick=showProduct(${p.id})
+                    div class=h-24 bg-gray-800 rounded flex items-center justify-center mb-2 text-4xl${p.icon}div
+                    div
+                        h4 class=font-bold text-sm truncate${p.name}h4
+                        p class=font-bold mt-1 style=color var(--logi-blue)$${p.price}p
+                    div
+                div
+            `).join('');
+        }
+
+         4. Show Product Detail
+        function showProduct(id) {
+            const p = products.find(x = x.id === id);
+            activeProductId = p.id;
+            
+            document.getElementById('product-detail-content').innerHTML = `
+                div class=h-48 bg-gray-800 rounded-xl flex items-center justify-center text-6xl mb-4${p.icon}div
+                h2 class=text-3xl font-bold${p.name}h2
+                p class=text-2xl font-bold mt-2 mb-4 style=color var(--logi-blue)$${p.price}p
+                div class=bg-gray-800 p-4 rounded-lg mb-6
+                    h3 class=font-bold mb-2Specificationsh3
+                    p class=text-gray-300 text-sm leading-relaxed${p.specs}p
+                div
+            `;
+            
+            tg.MainButton.setText(`ADD TO CART - $${p.price}`);
+            tg.MainButton.show();
+            tg.MainButton.onClick(handleMainButtonClick);
+            navigate('product');
+        }
+
+         5. Cart Logic
+        function addToCart(productId) {
+            const p = products.find(x = x.id === productId);
+            cart.push(p);
+            tg.HapticFeedback.impactOccurred('medium');
+            tg.showAlert(`${p.name} added to cart!`);
+            updateCartBadge();
+            navigate('home');
+        }
+
+        function updateCartBadge() {
+            const badge = document.getElementById('cart-badge');
+            if (cart.length  0) {
+                badge.textContent = cart.length;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
             }
         }
-    </script>
-    
-    <link rel="stylesheet" href="./css/styles.css">
-</head>
-<body class="bg-tgBg text-tgText font-sans antialiased pb-20 overflow-x-hidden">
 
-    <div id="toast-container" class="fixed top-4 left-0 right-0 z-50 flex flex-col items-center pointer-events-none gap-2"></div>
+        function renderCart() {
+            const cartItemsDiv = document.getElementById('cart-items');
+            if (cart.length === 0) {
+                cartItemsDiv.innerHTML = `p class=text-gray-500 text-center py-8Your cart is empty.p`;
+                tg.MainButton.hide();
+                document.getElementById('cart-total').textContent = `$0`;
+                return;
+            }
 
-    <main id="app-root" class="relative w-full h-full"></main>
+            let total = 0;
+            cartItemsDiv.innerHTML = cart.map((item, index) = {
+                total += item.price;
+                return `
+                div class=flex justify-between items-center bg-gray-800 p-3 rounded-lg
+                    div class=flex items-center space-x-3
+                        span class=text-2xl${item.icon}span
+                        span class=font-bold text-sm${item.name}span
+                    div
+                    div class=flex items-center space-x-4
+                        span class=font-bold$${item.price}span
+                        button onclick=removeFromCart(${index}) class=text-red-500 font-bold✕button
+                    div
+                div`;
+            }).join('');
+            
+            document.getElementById('cart-total').textContent = `$${total}`;
+        }
 
-    <nav id="bottom-nav" class="fixed bottom-0 w-full glass-nav border-t border-gray-800 z-40 pb-safe">
-        </nav>
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            tg.HapticFeedback.impactOccurred('light');
+            renderCart();
+            setupCartMainButton();
+            updateCartBadge();
+        }
 
-    <script type="module" src="./js/app.js"></script>
-</body>
-</html>
+         6. Main Button Handlers based on View
+        function handleMainButtonClick() {
+            if (currentView === 'product') addToCart(activeProductId);
+            else if (currentView === 'cart') navigate('checkout');
+            else if (currentView === 'checkout') validateAndGoToPayment();
+            else if (currentView === 'payment') finalizeOrder();
+        }
+
+        function setupHomeMainButton() {
+            if (cart.length  0) {
+                tg.MainButton.setText(`VIEW CART (${cart.length})`);
+                tg.MainButton.show();
+                tg.MainButton.onClick(() = navigate('cart'));
+            } else {
+                tg.MainButton.hide();
+            }
+        }
+
+        function setupCartMainButton() {
+            renderCart();
+            if (cart.length  0) {
+                tg.MainButton.setText(PROCEED TO CHECKOUT);
+                tg.MainButton.show();
+                tg.MainButton.onClick(handleMainButtonClick);
+            }
+        }
+
+        function setupCheckoutMainButton() {
+            tg.MainButton.setText(CONTINUE TO PAYMENT);
+            tg.MainButton.show();
+            tg.MainButton.onClick(handleMainButtonClick);
+        }
+
+        function validateAndGoToPayment() {
+            const name = document.getElementById('cust-name').value;
+            const phone = document.getElementById('cust-phone').value;
+            if (!name  !phone) {
+                tg.showAlert(Please enter your name and phone number.);
+                return;
+            }
+            const total = cart.reduce((sum, item) = sum + item.price, 0);
+            const deliveryFee = document.getElementById('delivery-method').value === 'express'  2  (document.getElementById('delivery-method').value === 'province'  3  0);
+            
+            document.getElementById('payment-total').textContent = `$${total + deliveryFee}`;
+            navigate('payment');
+        }
+
+        function setupPaymentMainButton() {
+            tg.MainButton.setText(CONFIRM ORDER);
+            tg.MainButton.show();
+            tg.MainButton.onClick(handleMainButtonClick);
+        }
+
+         7. Final Submission back to Telegram
+        function finalizeOrder() {
+            tg.showConfirm(Submit this order to Logitech KH, (confirmed) = {
+                if (confirmed) {
+                    const orderData = {
+                        customer document.getElementById('cust-name').value,
+                        phone document.getElementById('cust-phone').value,
+                        items cart.map(i = i.name),
+                        total document.getElementById('payment-total').textContent
+                    };
+                    
+                     This sends data back to your bot.py script!
+                    tg.sendData(JSON.stringify(orderData)); 
+                    tg.close();  Closes the mini app
+                }
+            });
+        }
+
+         Initialize App
+        renderHome();
+        setupHomeMainButton();
+    script
+body
+html

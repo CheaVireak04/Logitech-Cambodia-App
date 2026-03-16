@@ -56,7 +56,7 @@
             <template x-for="product in filteredProducts" :key="product.id">
                 <div @click="openProduct(product)" class="bg-tgCard rounded-2xl p-4 border border-gray-800/50 flex flex-col justify-between active:scale-95 transition-transform duration-200">
                     <div class="w-full h-32 flex items-center justify-center bg-black/40 rounded-xl mb-4 p-2 relative">
-                        <span class="text-4xl" x-text="product.image"></span>
+                        <span class="text-4xl" x-text="product.img"></span>
                     </div>
                     <div>
                         <span class="text-[10px] uppercase tracking-wider text-gray-500" x-text="product.category"></span>
@@ -82,7 +82,7 @@
         <template x-if="activeProduct">
             <div>
                 <div class="bg-tgCard rounded-3xl p-6 mb-6 flex justify-center items-center h-64 border border-gray-800">
-                    <span class="text-8xl drop-shadow-[0_0_30px_rgba(0,184,252,0.3)]" x-text="activeProduct.image"></span>
+                    <span class="text-8xl drop-shadow-[0_0_30px_rgba(0,184,252,0.3)]" x-text="activeProduct.img"></span>
                 </div>
                 <div class="flex justify-between items-start mb-6">
                     <div>
@@ -112,7 +112,7 @@
         <div x-show="cart.length > 0" class="space-y-4 mb-8">
             <template x-for="(item, index) in cart" :key="index">
                 <div class="bg-tgCard p-4 rounded-2xl flex items-center gap-4 border border-gray-800/50">
-                    <div class="w-16 h-16 bg-black/50 rounded-xl flex items-center justify-center text-3xl shrink-0" x-text="item.image"></div>
+                    <div class="w-16 h-16 bg-black/50 rounded-xl flex items-center justify-center text-3xl shrink-0" x-text="item.img"></div>
                     <div class="flex-1">
                         <h4 class="text-logiBlue font-bold text-sm" x-text="item.name"></h4>
                         <span class="text-logiBlue font-bold mt-1 block" x-text="'$' + item.price"></span>
@@ -165,10 +165,10 @@
                 toast: { show: false, message: '' },
                 
                 products: [
-                    { id: 1, name: "G Pro X Superlight", price: 149, category: "Mouse", image: "https://resource.logitechg.com/c_fill,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/gaming/en/products/pro-x-superlight-2/new-gallery-assets-2025/pro-x-superlight-2-mice-top-angle-white-gallery-1.png", desc: "Less than 63 grams. Advanced low-latency LIGHTSPEED wireless. Sub-micron precision with HERO 25K sensor." },
-                    { id: 2, name: "G915 TKL Wireless", price: 229, category: "Keyboard", image: "https://resource.logitechg.com/w_544,h_466,ar_7:6,c_pad,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/gaming/en/products/g915-tkl/g915-tkl-gallery/us-g915-tkl-carbon-gallery-topdown.png", desc: "A breakthrough in design and engineering. Features LIGHTSPEED pro-grade wireless, advanced LIGHTSYNC RGB, and high-performance low-profile mechanical switches." },
-                    { id: 3, name: "G733 LIGHTSPEED", price: 129, category: "Headset", image: "https://resource.logitechg.com/w_544,h_466,ar_7:6,c_pad,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/gaming/en/products/g733/gallery/g733-lilac-gallery-1.png", desc: "Meet G733, a gaming headset designed to suit your style. Embrace total wireless with 2.4 GHZ LIGHTSPEED." },
-                    { id: 4, name: "Brio 4K Stream", price: 199, category: "Camera", image: "https://resource.logitech.com/w_692,c_lpad,ar_4:3,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/logitech/en/products/webcams/brio/gallery/brio-gallery-1.png?v=1", desc: "Ultra HD 4K webcam for video conferencing, streaming, and recording. Features RightLight 3 and HDR technology." }
+                    { id: 1, name: "G Pro X Superlight", price: 149, category: "Mouse", img: "https://resource.logitechg.com/c_fill,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/gaming/en/products/pro-x-superlight-2/new-gallery-assets-2025/pro-x-superlight-2-mice-top-angle-white-gallery-1.png", desc: "Less than 63 grams. Advanced low-latency LIGHTSPEED wireless. Sub-micron precision with HERO 25K sensor." },
+                    { id: 2, name: "G915 TKL Wireless", price: 229, category: "Keyboard", img: "https://resource.logitechg.com/w_544,h_466,ar_7:6,c_pad,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/gaming/en/products/g915-tkl/g915-tkl-gallery/us-g915-tkl-carbon-gallery-topdown.png", desc: "A breakthrough in design and engineering. Features LIGHTSPEED pro-grade wireless, advanced LIGHTSYNC RGB, and high-performance low-profile mechanical switches." },
+                    { id: 3, name: "G733 LIGHTSPEED", price: 129, category: "Headset", img: "https://resource.logitechg.com/w_544,h_466,ar_7:6,c_pad,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/gaming/en/products/g733/gallery/g733-lilac-gallery-1.png", desc: "Meet G733, a gaming headset designed to suit your style. Embrace total wireless with 2.4 GHZ LIGHTSPEED." },
+                    { id: 4, name: "Brio 4K Stream", price: 199, category: "Camera", img: "https://resource.logitech.com/w_692,c_lpad,ar_4:3,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/logitech/en/products/webcams/brio/gallery/brio-gallery-1.png?v=1", desc: "Ultra HD 4K webcam for video conferencing, streaming, and recording. Features RightLight 3 and HDR technology." }
                 ],
 
                 get filteredProducts() {

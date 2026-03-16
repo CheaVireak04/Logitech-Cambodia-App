@@ -60,7 +60,7 @@
                     </div>
                     <div>
                         <span class="text-[10px] uppercase tracking-wider text-gray-500" x-text="product.category"></span>
-                        <h4 class="font-bold text-sm leading-tight mt-1 truncate" x-text="product.name"></h4>
+                        <h4 class="text-logiBlue font-bold text-sm leading-tight mt-1 truncate" x-text="product.name"></h4>
                         <div class="flex justify-between items-end mt-3">
                             <span class="text-logiBlue font-bold text-lg" x-text="'$' + product.price"></span>
                             <button @click.stop="addToCart(product)" class="bg-gray-800 hover:bg-logiBlue hover:text-black p-2 rounded-full transition-colors">
@@ -87,7 +87,7 @@
                 <div class="flex justify-between items-start mb-6">
                     <div>
                         <span class="text-logiBlue text-xs font-bold uppercase tracking-widest" x-text="activeProduct.category"></span>
-                        <h2 class="text-3xl font-black mt-1" x-text="activeProduct.name"></h2>
+                        <h2 class="text-3xl text-logiBlue font-black mt-1" x-text="activeProduct.name"></h2>
                     </div>
                     <span class="text-2xl font-bold text-logiBlue" x-text="'$' + activeProduct.price"></span>
                 </div>
@@ -101,7 +101,7 @@
     </div>
 
     <div x-show="view === 'cart'" x-transition.opacity.duration.300ms x-cloak class="p-4 pb-32">
-        <h2 class="text-3xl font-black mb-6">Your Cart</h2>
+        <h2 class="text-3xl text-logiBlue font-black mb-6">Your Cart</h2>
         
         <div x-show="cart.length === 0" class="text-center py-20">
             <span class="text-6xl mb-4 block opacity-50">🛒</span>
@@ -114,7 +114,7 @@
                 <div class="bg-tgCard p-4 rounded-2xl flex items-center gap-4 border border-gray-800/50">
                     <div class="w-16 h-16 bg-black/50 rounded-xl flex items-center justify-center text-3xl shrink-0" x-text="item.icon"></div>
                     <div class="flex-1">
-                        <h4 class="font-bold text-sm" x-text="item.name"></h4>
+                        <h4 class="text-logiBlue font-bold text-sm" x-text="item.name"></h4>
                         <span class="text-logiBlue font-bold mt-1 block" x-text="'$' + item.price"></span>
                     </div>
                     <button @click="removeFromCart(index)" class="w-10 h-10 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center active:scale-90 transition-transform">

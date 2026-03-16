@@ -112,7 +112,7 @@
         <div x-show="cart.length > 0" class="space-y-4 mb-8">
             <template x-for="(item, index) in cart" :key="index">
                 <div class="bg-tgCard p-4 rounded-2xl flex items-center gap-4 border border-gray-800/50">
-                    <div class="w-16 h-16 bg-black/50 rounded-xl flex items-center justify-center text-3xl shrink-0" x-text="item.icon"></div>
+                    <div class="w-16 h-16 bg-black/50 rounded-xl flex items-center justify-center text-3xl shrink-0" x-text="item.image"></div>
                     <div class="flex-1">
                         <h4 class="text-logiBlue font-bold text-sm" x-text="item.name"></h4>
                         <span class="text-logiBlue font-bold mt-1 block" x-text="'$' + item.price"></span>

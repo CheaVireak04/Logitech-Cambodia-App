@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Logitech Cambodia</title>
+    
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        logiBlue: '#00b8fc',
+                        tgBg: 'var(--tg-theme-bg-color, #121212)',
+                        tgText: 'var(--tg-theme-text-color, #ffffff)',
+                        tgCard: 'var(--tg-theme-secondary-bg-color, #1e1e1e)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body class="bg-tgBg text-tgText font-sans antialiased pb-20 overflow-x-hidden">
+
+    <div id="toast-container" class="fixed top-4 left-0 right-0 z-50 flex flex-col items-center pointer-events-none gap-2"></div>
+
+    <main id="app-root" class="relative w-full h-full"></main>
+
+    <nav id="bottom-nav" class="fixed bottom-0 w-full glass-nav border-t border-gray-800 z-40 pb-safe">
+        </nav>
+
+    <script type="module" src="./js/app.js"></script>
+</body>
+</html>

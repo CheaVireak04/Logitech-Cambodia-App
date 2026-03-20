@@ -1,10 +1,9 @@
 // =========================================================================
-// ⚙️ APP SETTINGS
+// ⚙️ APP SETTINGS (GravaStar Distributor)
 // =========================================================================
 const STORE_CONFIG = {
-    maxNewArrivals: 4,    
-    maxTrending: 4,       
+    maxNewArrivals: 6,    
+    maxTrending: 6,       
     maxBestDeals: 4,      
-    maxBestSelling: 4
-    // Price range bounds are now calculated dynamically in app.js
+    maxBestSelling: 6
 };

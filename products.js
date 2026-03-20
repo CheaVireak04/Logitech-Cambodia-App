@@ -32,13 +32,13 @@ const products = [
         variants: [{ name: "Field-Tested Look", price: 12 }, { name: "Factory New Look", price: 16 }] 
     },
     { 
-        id: 4, name: "Butterfly Knife Marble Fade", price: 12, oldPrice: 18, 
+        id: 4, name: "Butterfly Knife Marble Fade", price: 15, oldPrice: 18, 
         image: "https://cdn.skinport.com/cdn-cgi/image/width=512,height=384,fit=pad,format=avif,quality=85,background=transparent/images/screenshots/632758204/playside.png", 
         gallery: ["https://cdn.skinport.com/cdn-cgi/image/width=512,height=384,fit=pad,format=avif,quality=85,background=transparent/images/screenshots/632758204/playside.png"], 
         desc: "Premium replica desk toy. Smooth flipping action mechanism.", 
         dateAdded: "2026-03-04", clicks: 800, sales: 200, 
         tags: ["knife", "butterfly", "balisong", "marble", "fade"], 
-        variants: [{ name: "Standard Mechanism", price: 12 }, { name: "Pro Bearing Pivot", price: 19 }] 
+        variants: [{ name: "Standard Mechanism", price: 15 }, { name: "Pro Bearing Pivot", price: 19 }] 
     },
     { 
         id: 5, name: "Butterfly Knife Tiger Tooth", price: 12, oldPrice: 18, 

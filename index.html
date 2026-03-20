@@ -16,7 +16,10 @@
         :root { --bg-main: #f4f4f5; --bg-sec: #ffffff; --bg-card: #e5e5e5; --border: #d4d4d8; --text-main: #000000; --text-sec: #52525b; }
         body.dark { --bg-main: #000000; --bg-sec: #0a0a0a; --bg-card: #111111; --border: #262626; --text-main: #ffffff; --text-sec: #a3a3a3; }
         
+        .skeleton { background: linear-gradient(90deg, var(--bg-card) 25%, var(--border) 50%, var(--bg-card) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
         .flying-item { position: fixed; z-index: 9999; pointer-events: none; width: 60px; height: 60px; object-fit: contain; transition: all 0.7s cubic-bezier(0.25, 1, 0.5, 1); filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5)); }
+        
         .search-highlight { color: #3b82f6; font-weight: 900; }
         
         /* FULL COLOR COMPANY LOGOS */
@@ -41,6 +44,7 @@
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
         .pb-safe { padding-bottom: calc(1rem + env(safe-area-inset-bottom, 20px)); }
+        
         select, select option { white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
     </style>
 
@@ -54,14 +58,14 @@
 
     <header class="fixed top-0 w-full bg-premiumBlack/90 backdrop-blur-md border-b border-premiumBorder z-50 px-4 py-4 flex justify-between items-center transition-colors">
         <div class="flex items-center gap-4">
-            <button aria-label="Open Menu" onclick="app.toggleLeftPanel()" class="text-premiumWhite active:scale-90 transition-transform">
+            <button onclick="app.toggleLeftPanel()" class="text-premiumWhite active:scale-90 transition-transform">
                 <svg class="w-6 h-6 stroke-[1.5px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
             </button>
             <div onclick="app.navigate('home'); app.setCategory('home');" class="cursor-pointer flex items-baseline gap-1 active:opacity-50 transition-opacity">
                 <h1 class="text-xl font-black tracking-[0.2em] uppercase">BRICK<span class="font-light text-premiumGray">STORE</span></h1>
             </div>
         </div>
-        <button aria-label="User Settings" onclick="app.togglePanel()" class="text-premiumWhite active:scale-90 transition-transform">
+        <button onclick="app.togglePanel()" class="text-premiumWhite active:scale-90 transition-transform">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
         </button>
     </header>
@@ -307,7 +311,6 @@
             init() {
                 try { this.tg = window.Telegram?.WebApp; this.tg?.expand?.(); this.tg?.ready?.(); } catch(e) {}
                 
-                // Dynamic Price Bounds
                 const prices = products.map(p => p.price);
                 this.absMinPrice = Math.floor(Math.min(...prices));
                 this.absMaxPrice = Math.ceil(Math.max(...prices));
@@ -317,7 +320,6 @@
                 const mi = document.getElementById('minPriceRange'); const ma = document.getElementById('maxPriceRange');
                 if(mi && ma) { mi.min = this.absMinPrice; mi.max = this.absMaxPrice; mi.value = this.absMinPrice; ma.min = this.absMinPrice; ma.max = this.absMaxPrice; ma.value = this.absMaxPrice; }
 
-                // Cart Persistence
                 try { 
                     this.isDarkMode = (localStorage.getItem('brickTheme') !== 'light'); 
                     const savedCart = localStorage.getItem('brickStoreCart');
@@ -352,7 +354,6 @@
 
             selectSuggestion(id) { this.haptic('light'); document.getElementById('search-suggestions').classList.add('hidden'); document.getElementById('searchInput').value = ""; this.searchQuery = ""; this.viewProduct(id); },
 
-            // ADD TO CART WITH VARIANT SUPPORT AND ANIMATION
             animateAddToCart(productId, event) {
                 if(event) event.stopPropagation(); this.haptic('medium'); 
                 const p = products.find(i => i.id === productId); if (!p) return;
@@ -395,7 +396,6 @@
                 else if (this.currentCategory === 'deal') { list.sort((a, b) => Number(a.price) - Number(b.price)); list = list.slice(0, STORE_CONFIG.maxBestDeals); }
                 else if (this.currentCategory === 'selling') { list.sort((a, b) => b.sales - a.sales); list = list.slice(0, STORE_CONFIG.maxBestSelling); }
                 
-                // HELPFUL EMPTY STATE
                 if (list.length === 0) { 
                     let suggestionHtml = "";
                     if (this.searchQuery.length > 2) {
@@ -484,7 +484,6 @@
             clearPhoneError() { document.getElementById('phone-error').classList.add('hidden'); },
             clearGrabPhoneError() { document.getElementById('grab-phone-error').classList.add('hidden'); },
 
-            // ORDER CONFIRMATION UX AND SECURE REDIRECT
             submitFinalOrder() {
                 this.haptic('medium'); let valid = true; const d = document.getElementById('modal-delivery').value;
                 if (!d) { document.getElementById('delivery-error').classList.remove('hidden'); valid = false; }
@@ -504,7 +503,7 @@
                 let msg = `🛒 NEW ORDER\nMethod: ${d}\n`;
                 if (isStandard) msg += `Company: ${this.selectedCompany}\nProvince: ${document.getElementById('modal-province').value}\nAddress: ${document.getElementById('modal-address').value || 'N/A'}\nPhone: ${document.getElementById('modal-phone').value}\n`;
                 if (isGrab) msg += `Phone: ${document.getElementById('grab-phone').value}\n`;
-                msg += `Note: ${document.getElementById('modal-note').value || 'None'}\n\nItems:\n` + items.map((i, idx) => `${idx+1}. ${i.name} (${i.variant?.name || 'Standard'}) - ${i.quantity}x @ $${i.cartPrice.toFixed(2)}`).join('\n') + `\nTotal: $${total.toFixed(2)}`;
+                msg += `Note: ${document.getElementById('modal-note').value || 'None'}\n\nItems:\n` + items.map((i, idx) => `${idx+1}. ${i.name} (${i.variant?.name || 'Standard'}) - ${i.quantity}x @ $${Number(i.cartPrice).toFixed(2)}`).join('\n') + `\nTotal: $${total.toFixed(2)}`;
                 
                 const contentArea = document.getElementById('order-modal-content');
                 const originalHTML = contentArea.innerHTML;
@@ -514,19 +513,26 @@
                             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                         </div>
                         <h3 class="text-xl font-black text-premiumWhite uppercase tracking-widest mb-2">Order Prepared</h3>
-                        <p class="text-xs text-premiumGray text-center">Redirecting securely to Telegram...</p>
+                        <p class="text-xs text-premiumGray text-center">Opening Telegram Chat...</p>
                         <div class="mt-6 w-8 h-8 border-2 border-premiumBorder border-t-[#2AABEE] rounded-full animate-spin"></div>
                     </div>
                 `;
 
                 setTimeout(() => {
-                    const url = `https://t.me/${this.supportUsername}?text=${encodeURIComponent(msg)}`;
+                    const url = `https://t.me/${this.supportUsername.replace('@', '')}?text=${encodeURIComponent(msg)}`;
                     const inTelegram = this.tg && this.tg.initDataUnsafe && Object.keys(this.tg.initDataUnsafe).length > 0;
                     
-                    if (inTelegram && this.tg.openTelegramLink) {
-                        this.tg.openTelegramLink(url);
+                    if (inTelegram) {
+                        try {
+                            if (this.tg.openTelegramLink) this.tg.openTelegramLink(url);
+                            else this.tg.openLink(url);
+                        } catch (err) {
+                            window.location.href = url;
+                        }
+                        // FORCE CLOSE MINI APP TO REVEAL CHAT
+                        setTimeout(() => { this.tg.close(); }, 200);
                     } else {
-                        window.location.href = url; // Ensures bypassing popup blockers in web browsers
+                        window.location.href = url; 
                     }
                     
                     if (!this.pendingOrderProductId) {
@@ -540,7 +546,6 @@
                 }, 1500);
             },
 
-            // SAVING CART LOCALLY AND UPDATING BADGE & TOTALS
             saveCart() { localStorage.setItem('brickStoreCart', JSON.stringify(this.cart)); this.updateCartBadge(); },
             
             updateQuantity(index, delta) { 
@@ -549,7 +554,6 @@
                 this.saveCart(); this.renderCart(); 
             },
 
-            // FIX: ASYNC CART DELETION WORKS PERFECTLY NOW
             removeFromCart(index) {
                 this.haptic('light');
                 this.cart.splice(index, 1);
@@ -589,7 +593,7 @@
                             </div>
                         </div>`;
                     }).join('');
-                    content.innerHTML = `<div>${cartItemsHTML}</div><div class="mt-8 border-t border-premiumBorder pt-6"><div class="flex justify-between items-center mb-6"><span class="text-premiumGray uppercase tracking-widest font-bold text-xs">Total Price</span><span class="text-2xl font-black text-premiumWhite tracking-widest">$${total.toFixed(2)}</span></div><button onclick="app.openOrderSummary()" class="w-full bg-premiumWhite text-premiumBlack font-black uppercase tracking-widest py-4 rounded-xl flex justify-center items-center gap-2 active:scale-95 transition-transform shadow-sm">CHECKOUT NOW</button></div>`;
+                    content.innerHTML = `<div>${cartItemsHTML}</div><div class="mt-8 border-t border-premiumBorder pt-6"><div class="flex justify-between items-center mb-6"><span class="text-premiumGray uppercase tracking-widest font-bold text-xs">Total Price</span><span class="text-2xl font-black text-premiumWhite tracking-widest">$${total.toFixed(2)}</span></div><button onclick="app.openOrderSummary()" class="w-full bg-premiumWhite text-premiumBlack font-black uppercase tracking-widest py-4 rounded-xl flex justify-center items-center gap-2 active:scale-95 transition-transform shadow-sm">BUY NOW</button></div>`;
                 } catch (e) { console.error("Cart render failed:", e); }
             },
 

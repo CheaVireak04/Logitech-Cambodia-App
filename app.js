@@ -106,7 +106,8 @@ const app = {
         }, event ? 700 : 0);
     },
 
-    // UPGRADE 6: REMOVED ARTIFICIAL TIMEOUT
+// Inside your existing app object in app.js...
+
     renderCatalog() {
         const grid = document.getElementById('product-grid'); if(!grid) return;
         
@@ -118,80 +119,82 @@ const app = {
             return matchesSearch && matchesPrice;
         });
 
-        if (this.currentCategory === 'new') { list.sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded)); list = list.slice(0, STORE_CONFIG.maxNewArrivals); } 
-        else if (this.currentCategory === 'trending') { list.sort((a, b) => b.clicks - a.clicks); list = list.slice(0, STORE_CONFIG.maxTrending); }
-        else if (this.currentCategory === 'deal') { list.sort((a, b) => Number(a.price) - Number(b.price)); list = list.slice(0, STORE_CONFIG.maxBestDeals); }
-        else if (this.currentCategory === 'selling') { list.sort((a, b) => b.sales - a.sales); list = list.slice(0, STORE_CONFIG.maxBestSelling); }
-        
-        // UPGRADE 5: HELPFUL EMPTY STATE
+        // NEW: Handles the new category system map (Audio, Keyboards, Mice, etc.)
+        if (this.currentCategory !== 'home' && !['new', 'trending', 'deal', 'selling'].includes(this.currentCategory)) {
+            list = list.filter(p => p.category === this.currentCategory);
+        } else if (this.currentCategory === 'new') { 
+            list.sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded)); list = list.slice(0, STORE_CONFIG.maxNewArrivals); 
+        } else if (this.currentCategory === 'trending') { 
+            list.sort((a, b) => b.clicks - a.clicks); list = list.slice(0, STORE_CONFIG.maxTrending); 
+        }
+
         if (list.length === 0) { 
-            let suggestionHtml = "";
-            if (this.searchQuery.length > 2) {
-                const popular = ["Karambit", "Butterfly", "Doppler", "Fade", "Tiger Tooth"];
-                const suggestion = popular.find(t => t.toLowerCase() !== this.searchQuery) || "Karambit";
-                suggestionHtml = `<p class="mt-4 text-xs text-premiumWhite">Did you mean: <a href="#" onclick="app.forceSearch('${suggestion}'); return false;" class="text-[#2AABEE] font-bold underline underline-offset-4">${suggestion}</a>?</p>`;
-            }
-            grid.innerHTML = `<div class="col-span-2 text-center py-12 px-4"><span class="text-4xl mb-4 grayscale filter block">🔍</span><p class="text-premiumGray text-sm mb-2">No items matched your search.</p>${suggestionHtml}<a href="#" onclick="app.resetFilters(); return false;" class="text-premiumWhite font-bold uppercase text-xs mt-6 inline-block bg-premiumCard px-4 py-2 rounded-lg">Clear Filters</a></div>`; 
+            grid.innerHTML = `<div class="col-span-2 text-center py-12 px-4 glass-panel rounded-xl mt-4 border-dashed border-premiumBorder"><span class="text-4xl mb-4 block drop-shadow-[0_0_10px_rgba(204,255,0,0.3)]">📡</span><p class="text-premiumGray text-sm mb-2 font-tech uppercase tracking-widest">No signals found.</p><a href="#" onclick="app.resetFilters(); return false;" class="text-black font-tech font-bold uppercase text-xs mt-6 inline-block neon-btn px-6 py-3 rounded-lg">Reset Scanners</a></div>`; 
             return; 
         }
 
+        // Updated Template Literal to match Cyberpunk UI structure
         grid.innerHTML = list.map(p => `
-            <div onclick="app.viewProduct(${p.id})" role="button" tabindex="0" onkeydown="if(event.key==='Enter') app.viewProduct(${p.id})" class="bg-premiumCard border border-premiumBorder rounded-xl overflow-hidden active:scale-95 transition-transform cursor-pointer shadow-sm hover:shadow-lg focus:outline-none focus:border-blue-500">
-                <div class="w-full aspect-square bg-[#0a0a0a] flex items-center justify-center p-2"><img src="${p.image}" alt="${p.name}" class="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(255,255,255,0.1)]"></div>
-                <div class="p-3 flex-1 border-t border-premiumBorder bg-premiumCard">
-                    <div><h4 class="font-bold text-xs uppercase tracking-wider mb-1 leading-tight text-premiumWhite" aria-label="Product Name">${this.highlightText(p.name)}</h4></div>
+            <div onclick="app.viewProduct(${p.id})" role="button" tabindex="0" class="glass-panel rounded-xl overflow-hidden active:scale-95 transition-transform cursor-pointer hover:border-neon focus:outline-none group relative">
+                ${p.price < p.oldPrice ? `<div class="absolute top-2 left-2 z-10 bg-neon text-black text-[8px] font-black uppercase px-2 py-0.5 rounded-sm">SALE</div>` : ''}
+                
+                <div class="w-full aspect-square bg-gradient-to-t from-[#0a0a0c] to-transparent flex items-center justify-center p-3">
+                    <img src="${p.image}" alt="${p.name}" class="w-full h-full object-contain filter drop-shadow-[0_10px_15px_rgba(0,0,0,0.8)] group-hover:scale-105 transition-transform duration-500">
+                </div>
+                <div class="p-3 flex-1 border-t border-premiumBorder bg-black/40">
+                    <div><h4 class="font-tech font-bold text-[11px] uppercase tracking-wider mb-1 leading-tight text-premiumWhite line-clamp-2">${this.highlightText(p.name)}</h4></div>
                     <div class="mt-3 flex justify-between items-center">
-                        <span class="text-premiumWhite font-black text-sm" aria-label="Price">$${Number(p.price).toFixed(2)}</span>
-                        <button onclick="app.animateAddToCart(${p.id}, event)" aria-label="Add ${p.name} to cart" class="w-7 h-7 rounded-full border border-premiumBorder flex items-center justify-center text-premiumWhite bg-premiumBlack hover:bg-premiumWhite hover:text-premiumBlack transition-colors shadow-md">
-                            <svg class="w-3 h-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        <span class="text-neon font-tech font-bold text-sm">$${Number(p.price).toFixed(2)}</span>
+                        <button onclick="app.animateAddToCart(${p.id}, event)" aria-label="Add ${p.name} to cart" class="w-7 h-7 rounded-md border border-premiumBorder flex items-center justify-center text-white bg-black hover:bg-neon hover:text-black hover:border-neon transition-all shadow-[0_0_10px_rgba(0,0,0,0.5)]">
+                            <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                         </button>
                     </div>
                 </div>
             </div>`).join('');
     },
 
-    // UPGRADE 3: DYNAMIC VARIANT SUPPORT
-    selectVariant(price, name) {
-        this.haptic('light');
-        document.getElementById('detail-price').innerText = `$${Number(price).toFixed(2)}`;
-        this.currentVariant = { name: name, price: Number(price) };
-    },
-
+    // Updated `viewProduct` to apply styling directly to dynamic product HTML injection
     viewProduct(id) {
         const p = products.find(i => i.id === id); if (!p) return;
         this.currentVariant = p.variants ? p.variants[0] : null;
 
-        let gHTML = `<img src="${p.image}" alt="${p.name}" class="w-full h-full object-contain p-4 filter drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">`;
-        if (p.gallery && p.gallery.length > 1) gHTML = `<div class="flex overflow-x-auto snap-x snap-mandatory hide-scroll h-full w-full">` + p.gallery.map((img, idx) => `<img src="${img}" alt="${p.name} view ${idx+1}" class="w-full h-full object-contain p-4 snap-center shrink-0 filter drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">`).join('') + `</div>`;
+        let gHTML = `<img src="${p.image}" alt="${p.name}" class="w-full h-full object-contain p-6 filter drop-shadow-[0_20px_30px_rgba(0,0,0,0.8)]">`;
+        if (p.gallery && p.gallery.length > 1) gHTML = `<div class="flex overflow-x-auto snap-x snap-mandatory hide-scroll h-full w-full">` + p.gallery.map((img, idx) => `<img src="${img}" alt="${p.name} view ${idx+1}" class="w-full h-full object-contain p-6 snap-center shrink-0 filter drop-shadow-[0_20px_30px_rgba(0,0,0,0.8)]">`).join('') + `</div>`;
         
         let variantsHTML = '';
         if (p.variants) {
-            variantsHTML = `<div class="mb-4 text-left"><label class="text-[10px] text-premiumGray uppercase font-bold tracking-widest block mb-2">Select Variant</label><select aria-label="Select variant" onchange="app.selectVariant(this.options[this.selectedIndex].dataset.price, this.value)" class="w-full bg-premiumCard border border-premiumBorder text-premiumWhite text-sm p-3 rounded-xl outline-none appearance-none cursor-pointer truncate">` + 
+            variantsHTML = `<div class="mb-6 text-left"><label class="text-[10px] text-neon uppercase font-tech tracking-widest block mb-2">Configure Specification</label><select aria-label="Select variant" onchange="app.selectVariant(this.options[this.selectedIndex].dataset.price, this.value)" class="w-full glass-panel text-white text-sm p-3 rounded-xl outline-none appearance-none cursor-pointer truncate neon-border">` + 
             p.variants.map((v, i) => `<option value="${v.name}" data-price="${v.price}" ${i === 0 ? 'selected' : ''}>${v.name} (+$${(v.price - p.price).toFixed(2)})</option>`).join('') + `</select></div>`;
         }
 
         const c = document.getElementById('product-detail-content');
         if(c) c.innerHTML = `
-            <div class="bg-premiumCard p-5 rounded-xl border border-premiumBorder mb-4 shadow-sm">
-                <div class="relative w-full aspect-square bg-[#0a0a0a] rounded-xl overflow-hidden mb-6 flex items-center justify-center border border-premiumBorder relative">${gHTML}${p.gallery.length > 1 ? `<div class="absolute bottom-2 w-full text-center text-[8px] text-premiumGray font-bold uppercase tracking-widest animate-pulse">Swipe image →</div>` : ''}</div>
-                <div class="text-center">
-                    <h2 class="text-2xl font-black uppercase tracking-widest mb-2 text-premiumWhite">${p.name}</h2>
-                    <div class="flex justify-center items-baseline gap-3 mb-2">
-                        <span id="detail-price" class="text-2xl font-black text-premiumWhite tracking-widest">$${Number(this.currentVariant ? this.currentVariant.price : p.price).toFixed(2)}</span>
-                        <span class="text-lg font-light text-premiumGray line-through decoration-red-500/70 block">$${Number(p.oldPrice).toFixed(2)}</span>
-                    </div>
+            <div class="glass-panel p-1 rounded-xl mb-4">
+                <div class="relative w-full aspect-square bg-gradient-to-br from-[#1a1a24] to-[#050505] rounded-[10px] overflow-hidden flex items-center justify-center relative">
+                    <div class="absolute inset-0 opacity-10" style="background-image: repeating-linear-gradient(45deg, var(--neon-accent) 0, var(--neon-accent) 1px, transparent 1px, transparent 50%); background-size: 10px 10px;"></div>
+                    ${gHTML}
+                </div>
+            </div>
+            <div class="text-center mb-6 mt-2">
+                <h2 class="text-2xl font-tech font-bold uppercase tracking-widest mb-2 text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">${p.name}</h2>
+                <div class="flex justify-center items-baseline gap-3 mb-2">
+                    <span id="detail-price" class="text-2xl font-tech font-black text-neon tracking-widest drop-shadow-[0_0_10px_rgba(204,255,0,0.3)]">$${Number(this.currentVariant ? this.currentVariant.price : p.price).toFixed(2)}</span>
+                    ${p.oldPrice > p.price ? `<span class="text-sm font-tech text-premiumGray line-through block">$${Number(p.oldPrice).toFixed(2)}</span>` : ''}
                 </div>
             </div>
             ${variantsHTML}
+            
+            <h4 class="font-tech text-xs uppercase text-premiumGray mb-2 border-b border-premiumBorder pb-2">Technical Specs</h4>
             <p class="text-sm text-premiumGray leading-relaxed mb-8 px-2 text-justify">${p.desc}</p>
-            <div class="space-y-3">
-                <button onclick="app.animateAddToCart(${p.id}, event)" aria-label="Add to cart" class="w-full bg-premiumCard border border-premiumBorder text-premiumWhite font-bold uppercase tracking-widest text-xs py-4 rounded-xl flex justify-center items-center gap-2 active:scale-95 transition-transform shadow-sm">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg> Add to Cart
+            
+            <div class="space-y-3 pb-8">
+                <button onclick="app.animateAddToCart(${p.id}, event)" aria-label="Add to cart" class="w-full glass-panel border border-premiumBorder hover:border-neon text-white font-tech font-bold uppercase tracking-widest text-xs py-4 rounded-xl flex justify-center items-center gap-2 active:scale-95 transition-all">
+                    ADD TO CART
                 </button>
-                <button onclick="app.openOrderSummary(${p.id})" aria-label="Buy Now" class="w-full bg-premiumWhite text-premiumBlack font-black uppercase tracking-widest text-xs py-4 rounded-xl flex justify-center items-center gap-2 active:scale-95 transition-transform shadow-sm">BUY NOW</button>
+                <button onclick="app.openOrderSummary(${p.id})" aria-label="Buy Now" class="w-full neon-btn font-tech uppercase tracking-widest text-xs py-4 rounded-xl flex justify-center items-center gap-2 font-black">QUICK BUY</button>
             </div>`;
         this.navigate('product');
-    },
+    }
 
     openOrderSummary(productId = null) {
         this.haptic('medium'); this.pendingOrderProductId = productId; this.selectedCompany = null;

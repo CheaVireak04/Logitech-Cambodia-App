@@ -20,53 +20,34 @@
             --border: #2a2a35; 
             --text-main: #ffffff; 
             --text-sec: #8a8a9d; 
-            --neon-accent: #ccff00; /* GravaStar Yellow/Green */
+            --neon-accent: #ccff00; 
             --neon-glow: 0 0 15px rgba(204, 255, 0, 0.4);
             --glass-blur: blur(12px);
         }
         
-        /* Forces dark mode aesthetics */
         body { background-color: var(--bg-main); color: var(--text-main); font-family: 'Inter', sans-serif; }
         .font-tech { font-family: 'Orbitron', sans-serif; }
         
-        .glass-panel {
-            background: var(--bg-card);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            border: 1px solid var(--border);
-        }
-
+        .glass-panel { background: var(--bg-card); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: 1px solid var(--border); }
         .neon-border { border: 1px solid var(--border); transition: all 0.3s ease; }
         .neon-border:focus-within, .neon-border:hover { border-color: var(--neon-accent); box-shadow: var(--neon-glow); }
-
-        .neon-btn {
-            background: var(--neon-accent);
-            color: #000;
-            box-shadow: 0 0 10px rgba(204, 255, 0, 0.2);
-            transition: all 0.2s ease;
-        }
+        .neon-btn { background: var(--neon-accent); color: #000; box-shadow: 0 0 10px rgba(204, 255, 0, 0.2); transition: all 0.2s ease; }
         .neon-btn:active { transform: scale(0.95); box-shadow: var(--neon-glow); }
-
         .flying-item { position: fixed; z-index: 9999; pointer-events: none; width: 60px; height: 60px; object-fit: contain; transition: all 0.7s cubic-bezier(0.25, 1, 0.5, 1); filter: drop-shadow(0 10px 15px rgba(204,255,0,0.5)); }
-        
         .search-highlight { color: var(--neon-accent); font-weight: 900; }
-
-        .company-box { border: 2px solid var(--border); transition: all 0.2s ease; opacity: 1; background-color: rgba(20,20,25,0.8); cursor: pointer; }
-        .company-box.selected { border-color: var(--neon-accent); background-color: rgba(204, 255, 0, 0.1); box-shadow: var(--neon-glow); }
-
+        .company-box { border: 2px solid var(--border); transition: all 0.2s ease; opacity: 1; background-color: rgba(20,20,25,0.8); cursor: pointer; filter: grayscale(100%); }
+        .company-box.selected { border-color: var(--neon-accent); background-color: rgba(204, 255, 0, 0.1); box-shadow: var(--neon-glow); filter: grayscale(0%); }
         .view-section { position: absolute; width: 100%; top: 0; left: 0; opacity: 0; visibility: hidden; transform: translateY(15px) scale(0.98); transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s; height: 0; overflow: hidden; }
         .view-section.active { position: relative; opacity: 1; visibility: visible; transform: translateY(0) scale(1); height: auto; overflow: visible; min-height: 80vh; }
-
-        /* CUSTOM SLIDER */
         .dual-slider-container { position: relative; width: 100%; height: 4px; background-color: var(--border); border-radius: 4px; margin-top: 18px; margin-bottom: 12px; }
         .dual-slider-track { position: absolute; height: 100%; background-color: var(--neon-accent); border-radius: 4px; z-index: 1; pointer-events: none; box-shadow: var(--neon-glow); }
         .dual-slider { position: absolute; width: 100%; top: -8px; appearance: none; -webkit-appearance: none; background: transparent; pointer-events: none; z-index: 3; margin: 0; padding: 0; }
         .dual-slider:focus { outline: none; }
         .dual-slider::-webkit-slider-thumb { pointer-events: auto; appearance: none; -webkit-appearance: none; width: 22px; height: 22px; border-radius: 0%; background-color: var(--neon-accent); cursor: pointer; border: 2px solid #000; box-shadow: 0 0 10px rgba(204,255,0,0.5); position: relative; z-index: 5; transition: transform 0.1s; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); }
-
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
         .pb-safe { padding-bottom: calc(1rem + env(safe-area-inset-bottom, 20px)); }
+        select, select option { white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
     </style>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -77,7 +58,7 @@
 
 <body class="bg-premiumBlack text-premiumWhite antialiased pb-24 select-none hide-scroll overflow-x-hidden">
 
-    <header class="fixed top-0 w-full glass-panel z-50 px-4 py-4 flex justify-between items-center border-b-0">
+    <header class="fixed top-0 w-full glass-panel z-50 px-4 py-4 flex justify-between items-center border-b-0 shadow-md">
         <div class="flex items-center gap-4">
             <button onclick="app.toggleLeftPanel()" class="text-premiumWhite active:scale-90 transition-transform">
                 <svg class="w-6 h-6 stroke-[1.5px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
@@ -170,10 +151,74 @@
                 <div id="grab-fields" class="hidden space-y-4 p-4 glass-panel rounded-xl">
                     <div>
                         <label class="text-[10px] text-premiumGray uppercase font-bold tracking-widest block mb-2 font-tech">Comlink (Phone) <span class="text-neon">*</span></label>
-                        <input type="tel" id="grab-phone" placeholder="012 345 678" oninput="app.clearGrabPhoneError()" class="w-full bg-transparent border border-premiumBorder text-white text-sm p-3 rounded-xl outline-none neon-border">
+                        <input type="tel" id="grab-phone" placeholder="012 345 678" oninput="app.clearGrabPhoneError()" class="w-full bg-transparent border border-premiumBorder text-white text-sm p-3 rounded-xl outline-none neon-border placeholder-premiumGray">
+                        <p id="grab-phone-error" class="text-red-500 text-[10px] font-bold uppercase mt-2 hidden tracking-wider">⚠️ Comlink is required</p>
                     </div>
                 </div>
+
+                <div id="conditional-fields" class="hidden space-y-4 p-4 glass-panel rounded-xl">
+                    <div>
+                        <label class="text-[10px] text-premiumGray uppercase font-bold tracking-widest block mb-2 font-tech">Select Freight Carrier <span class="text-neon">*</span></label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <div id="company-vet" onclick="app.selectCompany('VET')" class="company-box rounded-xl p-2 flex justify-center items-center h-12">
+                                <img src="https://vireakbuntham.com/img/vireak-buntham.3087fdaf.png" alt="VET" class="h-full object-contain pointer-events-none">
+                            </div>
+                            <div id="company-jnt" onclick="app.selectCompany('J&T')" class="company-box rounded-xl p-2 flex justify-center items-center h-12">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR14ZxIWPL4ua777cTemr_v4dZykQ4uUBkOtvMIn_DMSKK5H6Hs3CQyp0mhI0nu7mAz0PXY-wpA0L2XP5ho3fK1b1bUudRwK7WYtHV8eQ&s=10" alt="J&T" class="h-full object-contain pointer-events-none">
+                            </div>
+                            <div id="company-l192" onclick="app.selectCompany('L192')" class="company-box rounded-xl p-2 flex justify-center items-center h-12">
+                                <img src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQjJr4cZCuxXdd6s-sNuo_VolvXeyDL6tQqpdshMQAprJDR6kBK" alt="L192" class="h-full object-contain pointer-events-none">
+                            </div>
+                        </div>
+                        <p id="company-error" class="text-red-500 text-[10px] font-bold uppercase mt-2 hidden tracking-wider">⚠️ Please select a carrier</p>
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-premiumGray uppercase font-bold tracking-widest block mb-2 font-tech">Destination Sector <span class="text-neon">*</span></label>
+                        <select id="modal-province" class="w-full glass-panel text-white text-sm p-3 rounded-xl outline-none appearance-none cursor-pointer truncate neon-border">
+                            <option value="Phnom Penh">Phnom Penh</option>
+                            <option value="Banteay Meanchey - Krong Serei Saophoan">Krong Serei Saophoan - Banteay Meanchey</option>
+                            <option value="Banteay Meanchey - Poipet">Poipet - Banteay Meanchey</option>
+                            <option value="Battambang">Battambang</option>
+                            <option value="Kampong Cham">Kampong Cham</option>
+                            <option value="Kampong Chhnang">Kampong Chhnang</option>
+                            <option value="Kampong Speu">Kampong Speu</option>
+                            <option value="Kampong Thom">Kampong Thom</option>
+                            <option value="Kampot - Krong Kampot">Krong Kampot - Kampot</option>
+                            <option value="Kandal">Kandal</option>
+                            <option value="Kep - Krong Kep">Krong Kep - Kep</option>
+                            <option value="Koh Kong">Koh Kong</option>
+                            <option value="Kratie">Kratie</option>
+                            <option value="Mondulkiri">Mondulkiri</option>
+                            <option value="Oddar Meanchey">Oddar Meanchey</option>
+                            <option value="Pailin">Pailin</option>
+                            <option value="Preah Sihanouk">Preah Sihanouk</option>
+                            <option value="Preah Vihear">Preah Vihear</option>
+                            <option value="Prey Veng">Prey Veng</option>
+                            <option value="Pursat">Pursat</option>
+                            <option value="Ratanakiri">Ratanakiri</option>
+                            <option value="Siem Reap">Siem Reap</option>
+                            <option value="Stung Treng">Stung Treng</option>
+                            <option value="Svay Rieng">Svay Rieng</option>
+                            <option value="Takeo">Takeo</option>
+                            <option value="Tboung Khmum">Tboung Khmum</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-premiumGray uppercase font-bold tracking-widest block mb-2 font-tech">Coordinates</label>
+                        <input type="text" id="modal-address" placeholder="Commune, Street, House No..." class="w-full bg-transparent border border-premiumBorder text-white text-sm p-3 rounded-xl outline-none neon-border placeholder-premiumGray">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-premiumGray uppercase font-bold tracking-widest block mb-2 font-tech">Comlink (Phone) <span class="text-neon">*</span></label>
+                        <input type="tel" id="modal-phone" placeholder="012 345 678" oninput="app.clearPhoneError()" class="w-full bg-transparent border border-premiumBorder text-white text-sm p-3 rounded-xl outline-none neon-border placeholder-premiumGray">
+                        <p id="phone-error" class="text-red-500 text-[10px] font-bold uppercase mt-2 hidden tracking-wider">⚠️ Comlink is required</p>
+                    </div>
                 </div>
+
+                <div>
+                    <label class="text-[10px] text-premiumGray uppercase font-bold tracking-widest block mb-2 font-tech">Data Log</label>
+                    <textarea id="modal-note" placeholder="Any special configuration requests?" class="w-full glass-panel text-white text-sm p-4 rounded-xl h-20 resize-none outline-none neon-border placeholder-premiumGray"></textarea>
+                </div>
+            </div>
 
             <button onclick="app.submitFinalOrder()" class="w-full neon-btn font-tech font-bold uppercase tracking-widest text-sm py-4 rounded-xl mt-8 flex justify-center items-center gap-2">
                 INITIATE TRANSFER
@@ -183,8 +228,11 @@
 
     <div id="left-panel-overlay" onclick="app.toggleLeftPanel()" class="fixed inset-0 bg-black/80 z-[90] hidden backdrop-blur-sm transition-opacity opacity-0"></div>
     <div id="left-panel" class="fixed inset-y-0 left-0 w-72 max-w-[85%] glass-panel border-r border-premiumBorder z-[100] transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col shadow-[10px_0_30px_rgba(0,0,0,0.8)]">
-        <div class="p-5 border-b border-premiumBorder flex justify-between items-center bg-black/50">
+        <div class="p-5 border-b border-premiumBorder flex justify-between items-center bg-black/50 relative">
             <span class="font-tech font-bold uppercase tracking-widest text-sm text-neon mx-auto">Systems Menu</span>
+            <button onclick="app.toggleLeftPanel()" class="text-premiumGray hover:text-premiumWhite active:scale-90 transition-transform absolute right-4">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </button>
         </div>
         <div class="p-4 flex-1 overflow-y-auto hide-scroll space-y-2 mt-2">
             <button onclick="app.setCategory('home')" class="w-full text-left flex items-center gap-4 p-4 rounded-xl glass-panel hover:border-neon active:scale-95 transition-all"><span class="text-lg">🌐</span><span class="font-bold text-xs uppercase tracking-widest text-premiumWhite">All Systems</span></button>
@@ -197,10 +245,38 @@
         </div>
     </div>
 
+    <div id="panel-overlay" onclick="app.togglePanel()" class="fixed inset-0 bg-black/80 z-[90] hidden backdrop-blur-sm transition-opacity opacity-0"></div>
+    <div id="side-panel" class="fixed inset-y-0 right-0 w-80 max-w-[85%] glass-panel border-l border-premiumBorder z-[100] transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col shadow-[10px_0_30px_rgba(0,0,0,0.8)]">
+        <div class="p-5 border-b border-premiumBorder flex justify-between items-center bg-black/50">
+            <button onclick="app.togglePanel()" class="text-premiumGray hover:text-white active:scale-90 transition-transform focus:outline-none">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            </button>
+            <span class="font-tech font-bold uppercase tracking-widest text-sm text-neon">Terminal</span>
+        </div>
+        <div class="p-6 flex-1 overflow-y-auto hide-scroll space-y-8">
+            <div>
+                <h3 class="font-tech font-black text-white uppercase tracking-widest text-sm mb-3 border-b border-premiumBorder pb-2">About Network</h3>
+                <p class="text-[11px] text-premiumGray leading-relaxed text-justify">GRAVASTAR Official Distributor Store. Supplying premium sci-fi gaming hardware, high-fidelity audio, and mecha tech.</p>
+            </div>
+            <div>
+                <h3 class="font-tech font-black text-white uppercase tracking-widest text-sm mb-4 border-b border-premiumBorder pb-2">Comms Channel</h3>
+                <div class="space-y-4">
+                    <a href="#" onclick="app.openSocial('https://www.facebook.com/'); return false;" class="flex items-center gap-3 text-xs font-bold text-premiumGray hover:text-neon transition-colors focus:outline-none"><svg class="w-5 h-5 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg> Facebook </a>
+                    <a href="#" onclick="app.openSocial('https://www.instagram.com/'); return false;" class="flex items-center gap-3 text-xs font-bold text-premiumGray hover:text-neon transition-colors focus:outline-none"><svg class="w-5 h-5 text-[#E4405F]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.209-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg> Instagram </a>
+                </div>
+            </div>
+            <div class="pt-6 border-t border-premiumBorder mt-6">
+                <button onclick="app.shareApp()" class="w-full flex items-center justify-center gap-2 p-4 rounded-xl neon-btn font-tech font-black text-xs uppercase tracking-widest active:scale-95 transition-transform">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg> Share Network Link
+                </button>
+            </div>
+        </div>
+    </div>
+
     <nav class="fixed bottom-0 w-full glass-panel z-40 pb-safe border-t-0 shadow-[0_-10px_30px_rgba(0,0,0,0.8)]">
         <div class="flex justify-around items-center p-4 max-w-md mx-auto">
-            <button onclick="app.navigate('home'); app.setCategory('home');" id="nav-home" class="flex flex-col items-center text-neon transition-colors focus:outline-none">
-                <svg class="w-6 h-6 mb-1 drop-shadow-[0_0_5px_rgba(204,255,0,0.5)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+            <button onclick="app.navigate('home'); app.setCategory('home');" id="nav-home" class="flex flex-col items-center text-neon transition-colors focus:outline-none drop-shadow-[0_0_5px_rgba(204,255,0,0.5)]">
+                <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                 <span class="text-[9px] font-bold uppercase tracking-widest font-tech">Database</span>
             </button>
             <button onclick="app.navigate('cart')" id="nav-cart" class="flex flex-col items-center text-premiumGray hover:text-neon transition-colors relative focus:outline-none">
@@ -210,5 +286,9 @@
             </button>
         </div>
     </nav>
-    </body>
+    
+    <script src="config.js"></script>
+    <script src="products.js"></script>
+    <script src="app.js"></script>
+</body>
 </html>

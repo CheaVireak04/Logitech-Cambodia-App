@@ -1,9 +1,9 @@
 // =========================================================================
-// ⚠️ APPLICATION LOGIC (V7 Modular & Optimized)
+// ⚠️ APPLICATION LOGIC (GravaStar Distributor Store)
 // =========================================================================
 
 const app = {
-    tg: null, supportUsername: "Chea_Vireak", searchQuery: "",
+    tg: null, supportUsername: "@Chea_Vireak", searchQuery: "",
     minPrice: 0, maxPrice: 1000, absMinPrice: 0, absMaxPrice: 1000,
     isPriceFilterActive: false, cart: [], isPanelOpen: false, isLeftPanelOpen: false,
     isDarkMode: true, currentCategory: 'home', pendingOrderProductId: null,
@@ -12,7 +12,6 @@ const app = {
     init() {
         try { this.tg = window.Telegram?.WebApp; this.tg?.expand?.(); this.tg?.ready?.(); } catch(e) {}
         
-        // UPGRADE 9: DYNAMIC PRICE RANGE CALCULATION
         const prices = products.map(p => p.price);
         this.absMinPrice = Math.floor(Math.min(...prices));
         this.absMaxPrice = Math.ceil(Math.max(...prices));
@@ -26,7 +25,6 @@ const app = {
             ma.min = this.absMinPrice; ma.max = this.absMaxPrice; ma.value = this.absMaxPrice; 
         }
 
-        // UPGRADE 1: CART PERSISTENCE
         try { 
             this.isDarkMode = (localStorage.getItem('brickTheme') !== 'light'); 
             const savedCart = localStorage.getItem('brickStoreCart');
@@ -42,7 +40,6 @@ const app = {
     haptic(style = 'light') { try { this.tg?.HapticFeedback?.impactOccurred?.(style); } catch (e) {} },
     highlightText(text) { if (!this.searchQuery) return text; const regex = new RegExp(`(${this.searchQuery})`, 'gi'); return text.replace(regex, '<span class="search-highlight">$1</span>'); },
 
-    // UPGRADE 5: BROADER SEARCH MATCHING
     handleSearch(event) {
         this.searchQuery = event.target.value.toLowerCase().trim();
         const suggestionsBox = document.getElementById('search-suggestions');
@@ -73,7 +70,6 @@ const app = {
 
     selectSuggestion(id) { this.haptic('light'); document.getElementById('search-suggestions').classList.add('hidden'); document.getElementById('searchInput').value = ""; this.searchQuery = ""; this.viewProduct(id); },
 
-    // UPGRADE 2 & 3: ADAPTING ANIMATION TO USE SELECTED VARIANTS
     animateAddToCart(productId, event) {
         if(event) event.stopPropagation(); 
         this.haptic('medium'); 
@@ -81,7 +77,6 @@ const app = {
         const p = products.find(i => i.id === productId); 
         if (!p) return;
         
-        // Determine variant (if triggered from grid, use default. If from detail page, use currentVariant)
         const variantToAdd = this.currentVariant || p.variants[0];
 
         if (event && event.target) {
@@ -93,7 +88,6 @@ const app = {
         }
 
         setTimeout(() => { 
-            // Check if exact product + variant is already in cart
             const existingIndex = this.cart.findIndex(i => i.id === productId && i.variant.name === variantToAdd.name);
             if (existingIndex > -1) {
                 this.cart[existingIndex].quantity += 1;
@@ -106,8 +100,6 @@ const app = {
         }, event ? 700 : 0);
     },
 
-// Inside your existing app object in app.js...
-
     renderCatalog() {
         const grid = document.getElementById('product-grid'); if(!grid) return;
         
@@ -119,7 +111,6 @@ const app = {
             return matchesSearch && matchesPrice;
         });
 
-        // NEW: Handles the new category system map (Audio, Keyboards, Mice, etc.)
         if (this.currentCategory !== 'home' && !['new', 'trending', 'deal', 'selling'].includes(this.currentCategory)) {
             list = list.filter(p => p.category === this.currentCategory);
         } else if (this.currentCategory === 'new') { 
@@ -129,11 +120,16 @@ const app = {
         }
 
         if (list.length === 0) { 
-            grid.innerHTML = `<div class="col-span-2 text-center py-12 px-4 glass-panel rounded-xl mt-4 border-dashed border-premiumBorder"><span class="text-4xl mb-4 block drop-shadow-[0_0_10px_rgba(204,255,0,0.3)]">📡</span><p class="text-premiumGray text-sm mb-2 font-tech uppercase tracking-widest">No signals found.</p><a href="#" onclick="app.resetFilters(); return false;" class="text-black font-tech font-bold uppercase text-xs mt-6 inline-block neon-btn px-6 py-3 rounded-lg">Reset Scanners</a></div>`; 
+            let suggestionHtml = "";
+            if (this.searchQuery.length > 2) {
+                const popular = ["Speaker", "Earbuds", "Mouse", "Keyboard", "Mecha"];
+                const suggestion = popular.find(t => t.toLowerCase() !== this.searchQuery) || "Mecha";
+                suggestionHtml = `<p class="mt-4 text-xs text-premiumWhite">Did you mean: <a href="#" onclick="app.forceSearch('${suggestion}'); return false;" class="text-neon font-bold underline underline-offset-4">${suggestion}</a>?</p>`;
+            }
+            grid.innerHTML = `<div class="col-span-2 text-center py-12 px-4 glass-panel rounded-xl mt-4 border-dashed border-premiumBorder"><span class="text-4xl mb-4 block drop-shadow-[0_0_10px_rgba(204,255,0,0.3)]">📡</span><p class="text-premiumGray text-sm mb-2 font-tech uppercase tracking-widest">No signals found.</p>${suggestionHtml}<a href="#" onclick="app.resetFilters(); return false;" class="text-black font-tech font-bold uppercase text-xs mt-6 inline-block neon-btn px-6 py-3 rounded-lg">Reset Scanners</a></div>`; 
             return; 
         }
 
-        // Updated Template Literal to match Cyberpunk UI structure
         grid.innerHTML = list.map(p => `
             <div onclick="app.viewProduct(${p.id})" role="button" tabindex="0" class="glass-panel rounded-xl overflow-hidden active:scale-95 transition-transform cursor-pointer hover:border-neon focus:outline-none group relative">
                 ${p.price < p.oldPrice ? `<div class="absolute top-2 left-2 z-10 bg-neon text-black text-[8px] font-black uppercase px-2 py-0.5 rounded-sm">SALE</div>` : ''}
@@ -142,9 +138,9 @@ const app = {
                     <img src="${p.image}" alt="${p.name}" class="w-full h-full object-contain filter drop-shadow-[0_10px_15px_rgba(0,0,0,0.8)] group-hover:scale-105 transition-transform duration-500">
                 </div>
                 <div class="p-3 flex-1 border-t border-premiumBorder bg-black/40">
-                    <div><h4 class="font-tech font-bold text-[11px] uppercase tracking-wider mb-1 leading-tight text-premiumWhite line-clamp-2">${this.highlightText(p.name)}</h4></div>
+                    <div><h4 class="font-tech font-bold text-[11px] uppercase tracking-wider mb-1 leading-tight text-premiumWhite line-clamp-2" aria-label="Product Name">${this.highlightText(p.name)}</h4></div>
                     <div class="mt-3 flex justify-between items-center">
-                        <span class="text-neon font-tech font-bold text-sm">$${Number(p.price).toFixed(2)}</span>
+                        <span class="text-neon font-tech font-bold text-sm" aria-label="Price">$${Number(p.price).toFixed(2)}</span>
                         <button onclick="app.animateAddToCart(${p.id}, event)" aria-label="Add ${p.name} to cart" class="w-7 h-7 rounded-md border border-premiumBorder flex items-center justify-center text-white bg-black hover:bg-neon hover:text-black hover:border-neon transition-all shadow-[0_0_10px_rgba(0,0,0,0.5)]">
                             <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                         </button>
@@ -153,7 +149,12 @@ const app = {
             </div>`).join('');
     },
 
-    // Updated `viewProduct` to apply styling directly to dynamic product HTML injection
+    selectVariant(price, name) {
+        this.haptic('light');
+        document.getElementById('detail-price').innerText = `$${Number(price).toFixed(2)}`;
+        this.currentVariant = { name: name, price: Number(price) };
+    },
+
     viewProduct(id) {
         const p = products.find(i => i.id === id); if (!p) return;
         this.currentVariant = p.variants ? p.variants[0] : null;
@@ -194,7 +195,7 @@ const app = {
                 <button onclick="app.openOrderSummary(${p.id})" aria-label="Buy Now" class="w-full neon-btn font-tech uppercase tracking-widest text-xs py-4 rounded-xl flex justify-center items-center gap-2 font-black">QUICK BUY</button>
             </div>`;
         this.navigate('product');
-    }
+    },
 
     openOrderSummary(productId = null) {
         this.haptic('medium'); this.pendingOrderProductId = productId; this.selectedCompany = null;
@@ -223,7 +224,6 @@ const app = {
     clearPhoneError() { document.getElementById('phone-error').classList.add('hidden'); },
     clearGrabPhoneError() { document.getElementById('grab-phone-error').classList.add('hidden'); },
 
-    // UPGRADE 4: ORDER CONFIRMATION UX
     submitFinalOrder() {
         this.haptic('medium'); let valid = true; const d = document.getElementById('modal-delivery').value;
         if (!d) { document.getElementById('delivery-error').classList.remove('hidden'); valid = false; }
@@ -253,17 +253,16 @@ const app = {
         if (isGrab) msg += `Phone: ${document.getElementById('grab-phone').value}\n`;
         msg += `Note: ${document.getElementById('modal-note').value || 'None'}\n\nItems:\n` + items.map((i, idx) => `${idx+1}. ${i.name} (${i.variant.name}) - ${i.quantity}x @ $${i.cartPrice.toFixed(2)}`).join('\n') + `\nTotal: $${total.toFixed(2)}`;
         
-        // Transform Modal to Success State UX before redirecting
         const contentArea = document.getElementById('order-modal-content');
         const originalHTML = contentArea.innerHTML;
         contentArea.innerHTML = `
             <div class="flex flex-col items-center justify-center py-10">
-                <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(34,197,94,0.4)]">
-                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                <div class="w-16 h-16 bg-neon rounded-full flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(204,255,0,0.6)]">
+                    <svg class="w-8 h-8 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                 </div>
-                <h3 class="text-xl font-black text-premiumWhite uppercase tracking-widest mb-2">Order Prepared</h3>
+                <h3 class="text-xl font-tech font-bold text-white uppercase tracking-widest mb-2">Transfer Prepared</h3>
                 <p class="text-xs text-premiumGray text-center">Redirecting securely to Telegram...</p>
-                <div class="mt-6 w-8 h-8 border-2 border-premiumBorder border-t-[#2AABEE] rounded-full animate-spin"></div>
+                <div class="mt-6 w-8 h-8 border-2 border-premiumBorder border-t-neon rounded-full animate-spin"></div>
             </div>
         `;
 
@@ -278,7 +277,6 @@ const app = {
                 window.open(url, '_blank');
             }
             
-            // Empty Cart if this was a cart checkout
             if (!this.pendingOrderProductId) {
                 this.cart = [];
                 this.saveCart();
@@ -287,13 +285,12 @@ const app = {
             
             setTimeout(() => {
                 this.closeOrderSummary();
-                setTimeout(() => contentArea.innerHTML = originalHTML, 300); // restore HTML hidden
+                setTimeout(() => contentArea.innerHTML = originalHTML, 300);
             }, 500);
             
-        }, 1500); // 1.5 second confirmation UX delay
+        }, 1500);
     },
 
-    // UPGRADE 1 & 2: CART PERSISTENCE AND QUANTITY MANAGEMENT
     saveCart() {
         localStorage.setItem('brickStoreCart', JSON.stringify(this.cart));
         this.updateCartBadge();
@@ -310,12 +307,19 @@ const app = {
         this.renderCart();
     },
 
+    removeFromCart(index) {
+        this.haptic('light');
+        this.cart.splice(index, 1);
+        this.saveCart();
+        this.renderCart();
+    },
+
     renderCart() {
         try {
             const content = document.getElementById('cart-content');
             if(!content) return;
             if (this.cart.length === 0) {
-                content.innerHTML = `<div class="text-center py-20"><span class="text-6xl mb-6 block opacity-30 grayscale filter">🛒</span><h3 class="text-premiumWhite font-bold uppercase tracking-widest mb-2">Your cart is empty</h3><p class="text-xs text-premiumGray mb-8">Looks like you haven't added any knives yet.</p><button onclick="app.navigate('home'); app.setCategory('home');" class="bg-premiumWhite text-premiumBlack font-black uppercase tracking-widest py-3 px-8 rounded-xl active:scale-95 transition-transform shadow-sm">Go to Shopping</button></div>`;
+                content.innerHTML = `<div class="text-center py-20"><span class="text-6xl mb-6 block opacity-30 drop-shadow-[0_0_10px_rgba(204,255,0,0.5)]">🛒</span><h3 class="text-white font-tech font-bold uppercase tracking-widest mb-2">Storage Empty</h3><p class="text-xs text-premiumGray mb-8">You haven't added any gear to your loadout.</p><button onclick="app.navigate('home'); app.setCategory('home');" class="neon-btn font-tech font-black uppercase tracking-widest py-3 px-8 rounded-xl active:scale-95 transition-transform shadow-sm">Access Database</button></div>`;
                 return;
             }
             let total = 0;
@@ -324,30 +328,33 @@ const app = {
                 const itemTotal = Number(item.cartPrice || item.price) * item.quantity;
                 total += itemTotal;
                 return `
-                <div class="bg-premiumCard border border-premiumBorder p-3 rounded-xl flex items-center gap-4 mb-3 shadow-sm">
-                    <div class="w-16 h-16 bg-[#0a0a0a] rounded-lg flex items-center justify-center p-2 border border-premiumBorder shadow-inner">
-                        <img src="${item.image}" alt="${item.name}" class="w-full h-full object-contain filter drop-shadow-[0_0_5px_rgba(255,255,255,0.1)]">
+                <div class="glass-panel border border-premiumBorder p-3 rounded-xl flex items-center gap-4 mb-3 shadow-sm hover:border-neon transition-colors">
+                    <div class="w-16 h-16 bg-[#0a0a0c] rounded-lg flex items-center justify-center p-2 border border-premiumBorder shadow-inner">
+                        <img src="${item.image}" alt="${item.name}" class="w-full h-full object-contain filter drop-shadow-[0_5px_10px_rgba(0,0,0,0.8)]">
                     </div>
                     <div class="flex-1">
-                        <h4 class="font-bold text-xs uppercase tracking-wider text-premiumWhite leading-tight">${item.name}</h4>
+                        <h4 class="font-tech font-bold text-xs uppercase tracking-wider text-white leading-tight">${item.name}</h4>
                         <span class="text-[9px] text-premiumGray block truncate w-32 uppercase font-bold tracking-widest">${item.variant?.name || 'Standard'}</span>
-                        <span class="text-[#2AABEE] text-sm font-bold block mt-1">$${itemTotal.toFixed(2)}</span>
+                        <span class="text-neon text-sm font-tech font-bold block mt-1">$${itemTotal.toFixed(2)}</span>
                     </div>
-                    <div class="flex items-center gap-2 bg-premiumBlack rounded-lg border border-premiumBorder p-1">
-                        <button onclick="app.updateQuantity(${index}, -1)" aria-label="Decrease quantity" class="w-7 h-7 text-premiumWhite flex items-center justify-center active:scale-90"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg></button>
-                        <span class="text-xs font-black text-premiumWhite w-4 text-center">${item.quantity}</span>
-                        <button onclick="app.updateQuantity(${index}, 1)" aria-label="Increase quantity" class="w-7 h-7 text-premiumWhite flex items-center justify-center active:scale-90"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg></button>
+                    <div class="flex flex-col items-center gap-1">
+                        <button onclick="app.removeFromCart(${index})" class="w-6 h-6 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center active:scale-90 transition-transform mb-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
+                        <div class="flex items-center gap-2 bg-black/60 rounded-lg border border-premiumBorder p-1">
+                            <button onclick="app.updateQuantity(${index}, -1)" aria-label="Decrease quantity" class="w-5 h-5 text-white flex items-center justify-center active:scale-90"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg></button>
+                            <span class="text-xs font-tech font-black text-neon w-3 text-center">${item.quantity}</span>
+                            <button onclick="app.updateQuantity(${index}, 1)" aria-label="Increase quantity" class="w-5 h-5 text-white flex items-center justify-center active:scale-90"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg></button>
+                        </div>
                     </div>
                 </div>`;
             }).join('');
-            content.innerHTML = `<div>${cartItemsHTML}</div><div class="mt-8 border-t border-premiumBorder pt-6"><div class="flex justify-between items-center mb-6"><span class="text-premiumGray uppercase tracking-widest font-bold text-xs">Total Price</span><span class="text-2xl font-black text-premiumWhite tracking-widest">$${total.toFixed(2)}</span></div><button onclick="app.openOrderSummary()" class="w-full bg-premiumWhite text-premiumBlack font-black uppercase tracking-widest py-4 rounded-xl flex justify-center items-center gap-2 active:scale-95 transition-transform shadow-sm">CHECKOUT NOW</button></div>`;
+            content.innerHTML = `<div>${cartItemsHTML}</div><div class="mt-8 border-t border-premiumBorder pt-6"><div class="flex justify-between items-center mb-6"><span class="text-premiumGray uppercase tracking-widest font-tech font-bold text-xs">Total</span><span class="text-2xl font-tech font-black text-neon tracking-widest">$${total.toFixed(2)}</span></div><button onclick="app.openOrderSummary()" class="w-full neon-btn font-tech font-black uppercase tracking-widest py-4 rounded-xl flex justify-center items-center gap-2 active:scale-95 transition-transform shadow-[0_0_15px_rgba(204,255,0,0.3)]">INITIATE CHECKOUT</button></div>`;
         } catch (e) { console.error("Cart render failed:", e); }
     },
 
     openSocial(url) { this.haptic('light'); if (this.tg && this.tg.openLink) { this.tg.openLink(url); } else { window.open(url, '_blank'); } },
     togglePanel() { this.haptic('light'); if(this.isLeftPanelOpen) this.toggleLeftPanel(); this.isPanelOpen = !this.isPanelOpen; const p = document.getElementById('side-panel'); const o = document.getElementById('panel-overlay'); if(!p || !o) return; if (this.isPanelOpen) { p.classList.replace('translate-x-full', 'translate-x-0'); o.classList.remove('hidden'); setTimeout(() => o.classList.add('opacity-100'), 10); } else { p.classList.replace('translate-x-0', 'translate-x-full'); o.classList.replace('opacity-100', 'opacity-0'); setTimeout(() => o.classList.add('hidden'), 300); } },
     toggleLeftPanel() { this.haptic('light'); if(this.isPanelOpen) this.togglePanel(); this.isLeftPanelOpen = !this.isLeftPanelOpen; const p = document.getElementById('left-panel'); const o = document.getElementById('left-panel-overlay'); if(!p || !o) return; if (this.isLeftPanelOpen) { p.classList.replace('-translate-x-full', 'translate-x-0'); o.classList.remove('hidden'); setTimeout(() => o.classList.add('opacity-100'), 10); } else { p.classList.replace('translate-x-0', '-translate-x-full'); o.classList.replace('opacity-100', 'opacity-0'); setTimeout(() => o.classList.add('hidden'), 300); } },
-    navigate(viewId) { this.haptic('light'); if(this.isPanelOpen) this.togglePanel(); if(this.isLeftPanelOpen) this.toggleLeftPanel(); document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active')); setTimeout(() => { const v = document.getElementById(`view-${viewId}`); if(v) v.classList.add('active'); }, 50); const h = document.getElementById('nav-home'); const c = document.getElementById('nav-cart'); if (viewId === 'home' || viewId === 'cart') { if(h) h.className = `flex flex-col items-center transition-colors ${viewId==='home'?'text-premiumWhite':'text-premiumGray hover:text-premiumWhite'}`; if(c) c.className = `flex flex-col items-center transition-colors relative ${viewId==='cart'?'text-premiumWhite':'text-premiumGray hover:text-premiumWhite'}`; try { this.tg?.BackButton?.hide?.(); } catch(e){} } else { try { this.tg?.BackButton?.show?.(); } catch(e){} } if (viewId === 'cart') this.renderCart(); window.scrollTo(0, 0); },
+    navigate(viewId) { this.haptic('light'); if(this.isPanelOpen) this.togglePanel(); if(this.isLeftPanelOpen) this.toggleLeftPanel(); document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active')); setTimeout(() => { const v = document.getElementById(`view-${viewId}`); if(v) v.classList.add('active'); }, 50); const h = document.getElementById('nav-home'); const c = document.getElementById('nav-cart'); if (viewId === 'home' || viewId === 'cart') { if(h) h.className = `flex flex-col items-center transition-colors ${viewId==='home'?'text-neon drop-shadow-[0_0_5px_rgba(204,255,0,0.5)]':'text-premiumGray hover:text-neon'}`; if(c) c.className = `flex flex-col items-center transition-colors relative ${viewId==='cart'?'text-neon drop-shadow-[0_0_5px_rgba(204,255,0,0.5)]':'text-premiumGray hover:text-neon'}`; try { this.tg?.BackButton?.hide?.(); } catch(e){} } else { try { this.tg?.BackButton?.show?.(); } catch(e){} } if (viewId === 'cart') this.renderCart(); window.scrollTo(0, 0); },
     handlePriceFilter(type) { this.isPriceFilterActive = true; const mi = document.getElementById('minPriceRange'); const ma = document.getElementById('maxPriceRange'); let min = Number(mi.value); let max = Number(ma.value); if (type === 'min' && min > max - 1) { min = max - 1; mi.value = min; } if (type === 'max' && max < min + 1) { max = min + 1; ma.value = max; } this.minPrice = min; this.maxPrice = max; this.updateSliderUI(); this.renderCatalog(); },
     updateSliderUI() { 
         const l = document.getElementById('priceValue'); if(l) l.innerText = `$${this.minPrice.toFixed(2)} — $${this.maxPrice.toFixed(2)}`; 
@@ -368,9 +375,9 @@ const app = {
     },
     setCategory(cat) { this.haptic('medium'); this.currentCategory = cat; this.searchQuery = ""; const si = document.getElementById('searchInput'); if(si) si.value = ""; if(this.isLeftPanelOpen) this.toggleLeftPanel(); this.navigate('home'); this.renderCatalog(); },
     resetFilters() { this.haptic('medium'); this.searchQuery = ""; const s = document.getElementById('searchInput'); if (s) s.value = ""; this.minPrice = this.absMinPrice; this.maxPrice = this.absMaxPrice; this.isPriceFilterActive = false; const mi = document.getElementById('minPriceRange'); const ma = document.getElementById('maxPriceRange'); if(mi) mi.value = this.absMinPrice; if(ma) ma.value = this.absMaxPrice; this.updateSliderUI(); this.setCategory('home'); },
-    applyTheme() { const k = document.getElementById('theme-toggle-knob'); document.body.classList.toggle('dark', this.isDarkMode); if(k) k.classList.toggle('translate-x-6', this.isDarkMode); try { this.tg?.setHeaderColor?.(this.isDarkMode?'#000000':'#f4f4f5'); this.tg?.setBackgroundColor?.(this.isDarkMode?'#000000':'#f4f4f5'); } catch(e){} },
+    applyTheme() { const k = document.getElementById('theme-toggle-knob'); document.body.classList.toggle('dark', this.isDarkMode); if(k) k.classList.toggle('translate-x-6', this.isDarkMode); try { this.tg?.setHeaderColor?.(this.isDarkMode?'#050505':'#050505'); this.tg?.setBackgroundColor?.(this.isDarkMode?'#050505':'#050505'); } catch(e){} },
     toggleTheme() { this.haptic('medium'); this.isDarkMode = !this.isDarkMode; try{localStorage.setItem('brickTheme', this.isDarkMode?'dark':'light');}catch(e){} this.applyTheme(); },
-    shareApp() { const l = "https://t.me/BrickStoreApp_bot/Homepage"; const t = "Check out BRICK STORE!"; try { if (this.tg?.openTelegramLink) this.tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(l)}&text=${encodeURIComponent(t)}`); else window.open(`https://t.me/share/url?url=${encodeURIComponent(l)}&text=${encodeURIComponent(t)}`, '_blank'); } catch(e){} }
+    shareApp() { const l = "https://t.me/GravaStarStore_bot/Homepage"; const t = "Check out the official GravaStar Distributor Store!"; try { if (this.tg?.openTelegramLink) this.tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(l)}&text=${encodeURIComponent(t)}`); else window.open(`https://t.me/share/url?url=${encodeURIComponent(l)}&text=${encodeURIComponent(t)}`, '_blank'); } catch(e){} }
 };
 
 document.addEventListener('DOMContentLoaded', () => { app.init(); });
